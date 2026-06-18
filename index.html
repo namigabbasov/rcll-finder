@@ -262,6 +262,17 @@
   .step-dot.active { background: var(--stanford); width: 20px; border-radius: 99px; }
   .step-label { font-size: 10.5px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .09em; margin-left: 5px; }
 
+  /* ── Home landing ── */
+  .home-pane { padding: 4px 0 0; }
+  .home-desc {
+    font-size: 14.5px; color: var(--text2); line-height: 1.7;
+    max-width: 680px; margin-bottom: 10px;
+  }
+  .home-desc strong { color: var(--text); font-weight: 600; }
+  .home-start { font-size: 13.5px; color: var(--text3); line-height: 1.6; }
+  .home-start a { color: var(--stanford); cursor: pointer; font-weight: 500; text-decoration: none; }
+  .home-start a:hover { text-decoration: underline; }
+
   /* ── Personal login card ── */
   .db-card.req-login { border-left: 3px solid rgba(160,110,40,0.28); }
 
@@ -308,7 +319,7 @@
         <h2>Browse all databases</h2>
         <p>Search and filter the full list of 100+ databases by name, category, or access type.</p>
       </div>
-      <div class="entry-card active" id="card-guided" onclick="setMode('guided')">
+      <div class="entry-card" id="card-guided" onclick="setMode('guided')">
         <h2>Guided paths</h2>
         <p>Answer a few questions about your research and get targeted database recommendations.</p>
       </div>
@@ -322,8 +333,14 @@
 
   <div class="sticky-divider"></div>
 
+  <!-- HOME PANE -->
+  <div id="pane-home" class="home-pane">
+    <p class="home-desc">The Robert Crown Law Library provides access to <strong>114+ research databases</strong> — covering primary sources, secondary literature, international law, empirical data, news, and more.</p>
+    <p class="home-start">New here? <a onclick="setMode('guided')">Guided paths</a> asks two questions and recommends the right databases for your research question.</p>
+  </div>
+
   <!-- GUIDED PANE -->
-  <div id="pane-guided">
+  <div id="pane-guided" style="display:none">
     <div class="tab-bar">
       <button class="tab-btn on" id="btn-topic" onclick="setTree('topic')">By topic</button>
       <button class="tab-btn" id="btn-source" onclick="setTree('source')">By source type</button>
@@ -618,7 +635,7 @@ const SOURCE = [
 ];
 
 /* ── state ── */
-let activeMode = "guided";
+let activeMode = "";
 let activeTree = "topic";
 let stack = [];
 let activeCat = "All";
@@ -626,6 +643,7 @@ let activeCat = "All";
 /* ── mode switching ── */
 function setMode(m) {
   activeMode = m;
+  document.getElementById("pane-home").style.display = "none";
   ["guided","browse","ai"].forEach(x => {
     document.getElementById("pane-"+x).style.display = m===x ? "block" : "none";
     document.getElementById("card-"+x).classList.toggle("active", m===x);
