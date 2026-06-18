@@ -80,7 +80,7 @@
     border-radius: var(--radius);
     padding: 18px 20px 20px;
     cursor: pointer;
-    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s, padding 0.38s cubic-bezier(0.4,0,0.2,1);
     text-align: left;
     position: relative;
   }
@@ -91,8 +91,15 @@
     box-shadow: 0 4px 14px rgba(140,21,21,0.22);
   }
   .entry-card .icon { font-size: 22px; margin-bottom: 10px; }
-  .entry-card h2 { font-size: 14.5px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
-  .entry-card p { font-size: 12.5px; color: var(--text2); line-height: 1.5; }
+  .entry-card h2 { font-size: 14.5px; font-weight: 600; color: var(--text); margin-bottom: 5px; transition: font-size 0.38s, margin-bottom 0.38s; }
+  .entry-card p { font-size: 12.5px; color: var(--text2); line-height: 1.55; transition: font-size 0.38s; }
+
+  /* ── Bigger cards on home landing ── */
+  body.home .entry-grid { gap: 14px; }
+  body.home .entry-card { padding: 28px 26px 32px; }
+  body.home .entry-card h2 { font-size: 18px; margin-bottom: 10px; }
+  body.home .entry-card p { font-size: 14px; }
+  body.home .entry-card .coming-soon { font-size: 12px; margin-top: 12px; }
   .entry-card.active h2 { color: #fff; }
   .entry-card.active p { color: rgba(255,255,255,0.78); }
   .entry-card .coming-soon {
@@ -273,6 +280,13 @@
   .home-start a { color: var(--stanford); cursor: pointer; font-weight: 500; text-decoration: none; }
   .home-start a:hover { text-decoration: underline; }
 
+  /* ── Home spacer (collapses when mode selected) ── */
+  .home-spacer {
+    height: 9vh;
+    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .home-spacer.collapsed { height: 0; }
+
   /* ── Personal login card ── */
   .db-card.req-login { border-left: 3px solid rgba(160,110,40,0.28); }
 
@@ -295,7 +309,7 @@
   }
 </style>
 </head>
-<body>
+<body class="home">
 
 <header class="site-header">
   <div class="logo">Stanford Law School <span>/ Robert Crown Law Library</span></div>
@@ -303,6 +317,8 @@
 </header>
 
 <div class="container">
+
+  <div id="home-spacer" class="home-spacer"></div>
 
   <div class="page-title">
     <h1>Find the Right Legal Database</h1>
@@ -644,6 +660,8 @@ let activeCat = "All";
 function setMode(m) {
   activeMode = m;
   document.getElementById("pane-home").style.display = "none";
+  document.getElementById("home-spacer").classList.add("collapsed");
+  document.body.classList.remove("home");
   ["guided","browse","ai"].forEach(x => {
     document.getElementById("pane-"+x).style.display = m===x ? "block" : "none";
     document.getElementById("card-"+x).classList.toggle("active", m===x);
