@@ -55,7 +55,7 @@
   .site-header a:hover { color: #fff; }
 
   /* ── Layout ── */
-  .container { max-width: 900px; margin: 0 auto; padding: 28px 20px 60px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 28px 24px 60px; }
 
   /* ── Page title ── */
   .page-title { margin-bottom: 20px; }
@@ -155,10 +155,29 @@
     outline: none;
   }
   .browse-bar input:focus { border-color: var(--stanford); }
-  .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+  .pill-all-row { margin-bottom: 8px; }
+  .pill-group-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 7px; position: relative; }
+  .pill-group-row::after {
+    content: ""; pointer-events: none; position: absolute; right: 0; top: 0; bottom: 0;
+    width: 48px; background: linear-gradient(to right, transparent, var(--bg));
+  }
+  .pill-group {
+    min-width: 66px; font-size: 10px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: .07em; white-space: nowrap;
+    text-align: right; border-right: 1.5px solid var(--border2);
+    padding: 5px 8px 0 0; flex-shrink: 0;
+  }
+  .pill-group-pills {
+    display: flex; flex-wrap: nowrap; gap: 5px; flex: 1; min-width: 0;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; padding-right: 48px;
+  }
+  .pill-group-pills::-webkit-scrollbar { display: none; }
   .pill {
-    font-size: 11px; padding: 4px 11px; border-radius: 99px;
+    font-size: 10.5px; padding: 4px 9px; border-radius: 99px;
     border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer;
+    white-space: nowrap;
   }
   .pill:hover { background: var(--bg2); color: var(--text); }
   .pill.on { background: var(--stanford); border-color: var(--stanford); color: #fff; }
@@ -197,6 +216,54 @@
   }
   .ai-badge-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
   .ai-badge { font-size: 11px; padding: 3px 10px; border-radius: 99px; background: var(--purple-bg); color: var(--purple-text); }
+
+  /* ── Global search ── */
+  .global-search { position: relative; margin-bottom: 14px; }
+  .global-search input {
+    width: 100%; font-size: 15px; padding: 11px 14px 11px 40px;
+    border-radius: var(--radius); border: 1.5px solid var(--border);
+    background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='6.5' cy='6.5' r='4.5' fill='none' stroke='%238a8a84' stroke-width='1.5'/%3E%3Cline x1='9.9' y1='9.9' x2='14' y2='14' stroke='%238a8a84' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 12px center;
+    color: var(--text); outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .global-search input:focus { border-color: var(--stanford); box-shadow: 0 0 0 3px rgba(140,21,21,0.08); }
+  .global-search input::placeholder { color: var(--text3); }
+
+  /* ── Sticky mode cards ── */
+  .sticky-top {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--bg3); padding: 10px 0 0;
+    margin: -10px 0 0;
+  }
+  .sticky-top .entry-grid { margin-bottom: 0; }
+  .sticky-divider { height: 1px; background: var(--border); margin: 8px 0 20px; }
+
+  /* ── Step indicator ── */
+  .step-bar { display: flex; align-items: center; gap: 5px; margin-bottom: 12px; }
+  .step-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: background 0.2s; }
+  .step-dot.done { background: rgba(140,21,21,0.3); }
+  .step-dot.active { background: var(--stanford); }
+  .step-label { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; margin-left: 4px; }
+
+  /* ── Personal login card ── */
+  .db-card.req-login { border-left: 3px solid var(--amber-text); }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .sticky-top { position: static; padding: 0; margin: 0 0 16px; }
+    .entry-grid { grid-template-columns: 1fr; gap: 8px; }
+    .db-grid { grid-template-columns: 1fr; }
+    .choice-grid { grid-template-columns: 1fr; }
+    .container { padding: 16px 14px 40px; }
+    .page-title h1 { font-size: 20px; }
+    .browse-bar { flex-direction: column; }
+    .pill-row { gap: 4px; }
+    .tab-btn { font-size: 12px; padding: 8px 12px; }
+    .sticky-divider { margin: 6px 0 14px; }
+  }
+  @media (max-width: 440px) {
+    .site-header .logo span { display: none; }
+    .entry-card { padding: 14px; }
+  }
 </style>
 </head>
 <body>
@@ -209,31 +276,33 @@
 <div class="container">
 
   <div class="page-title">
-    <h1>Legal Database Finder</h1>
-    <p>Find the right research database — guided paths, full browse, or AI-powered search (coming soon). Questions? <a href="mailto:reference@law.stanford.edu">reference@law.stanford.edu</a> · 650 725.0800</p>
+    <h1>Find the Right Research Database</h1>
+    <p>Questions? <a href="mailto:reference@law.stanford.edu">reference@law.stanford.edu</a> · 650 725.0800</p>
   </div>
 
-  <!-- Entry mode -->
-  <div class="entry-grid">
-    <div class="entry-card active" id="card-guided" onclick="setMode('guided')">
-      <div class="icon">🗺️</div>
-      <h2>Guided paths</h2>
-      <p>Answer a few questions about your research and get targeted database recommendations.</p>
+  <!-- Sticky: global search + mode cards -->
+  <div class="sticky-top">
+    <div class="global-search">
+      <input type="search" id="global-q" placeholder="Search all 100+ databases…" oninput="globalSearch(this.value)" autocomplete="off">
     </div>
-    <div class="entry-card" id="card-browse" onclick="setMode('browse')">
-      <div class="icon">📚</div>
-      <h2>Browse all databases</h2>
-      <p>Search and filter the full list of 100+ databases by name, category, or access type.</p>
-    </div>
-    <div class="entry-card" id="card-ai" onclick="setMode('ai')">
-      <div class="icon">✨</div>
-      <h2>AI search</h2>
-      <p>Describe your research question in plain language and get smart database recommendations.</p>
-      <span class="coming-soon">Coming soon</span>
+    <div class="entry-grid">
+      <div class="entry-card" id="card-browse" onclick="setMode('browse')">
+        <h2>Browse all databases</h2>
+        <p>Search and filter the full list of 100+ databases by name, category, or access type.</p>
+      </div>
+      <div class="entry-card active" id="card-guided" onclick="setMode('guided')">
+        <h2>Guided paths</h2>
+        <p>Answer a few questions about your research and get targeted database recommendations.</p>
+      </div>
+      <div class="entry-card" id="card-ai" onclick="setMode('ai')">
+        <h2>AI search</h2>
+        <p>Describe your research question in plain language and get smart database recommendations.</p>
+        <span class="coming-soon">Coming soon</span>
+      </div>
     </div>
   </div>
 
-  <div class="divider"></div>
+  <div class="sticky-divider"></div>
 
   <!-- GUIDED PANE -->
   <div id="pane-guided">
@@ -250,7 +319,7 @@
     <div class="browse-bar">
       <input type="search" id="q" placeholder="Search databases by name or description…" oninput="renderBrowse()">
     </div>
-    <div class="pill-row" id="pills"></div>
+    <div id="pills"></div>
     <div class="browse-meta" id="browse-meta"></div>
     <div id="browse-out"></div>
   </div>
@@ -258,7 +327,6 @@
   <!-- AI PANE -->
   <div id="pane-ai" style="display:none">
     <div class="ai-placeholder">
-      <div class="ai-icon">✨</div>
       <h3>AI-powered database search</h3>
       <p>Describe your research question in plain English — "I need to find cases about corporate directors' fiduciary duties in Delaware" — and the AI will recommend the best databases and explain why.</p>
       <div class="ai-input-row">
@@ -448,9 +516,9 @@ const TOPIC = [
     {id:"corp-bank",label:"Bankruptcy",dbs:["BankruptcyData","Florida-UCLA-LoPucki Bankruptcy Research Database"]},
   ]},
   {id:"courts",label:"Courts",sub:"Federal, Supreme Court, and state court research",children:[
-    {id:"courts-fed",label:"Federal Courts",dbs:["Almanac of the Federal Judiciary","Bloomberg Law","CourtLink"]},
-    {id:"courts-sup",label:"Supreme Court",dbs:["U.S. Supreme Court Library (HeinOnline)","Supreme Court Brief","Supreme Court Insight","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978"]},
-    {id:"courts-state",label:"State Courts",dbs:["Bloomberg Law","CEB OnLaw","CourtLink"]},
+    {id:"courts-fed",label:"Federal",dbs:["Almanac of the Federal Judiciary","Bloomberg Law","CourtLink"]},
+    {id:"courts-sup",label:"Supreme",dbs:["U.S. Supreme Court Library (HeinOnline)","Supreme Court Brief","Supreme Court Insight","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978"]},
+    {id:"courts-state",label:"State",dbs:["Bloomberg Law","CEB OnLaw","CourtLink"]},
   ]},
   {id:"crim",label:"Criminal",sub:"Criminal law, criminology, prisoners' rights",dbs:["Crime, Punishment, and Popular Culture, 1790–1920","Criminal Justice & Criminology (HeinOnline)","Prison Legal News"]},
   {id:"intl",label:"Foreign, Comparative & International",sub:"Foreign law, comparative, international, treaties",children:[
@@ -464,10 +532,10 @@ const TOPIC = [
     {id:"hist-leg",label:"Legislative History",dbs:["ProQuest Legislative Insight","ProQuest Congressional","U.S. Federal Legislative History Library (HeinOnline)"]},
     {id:"hist-pre",label:"Pre-Colonial",dbs:["Basilica Online","Legal Classics (HeinOnline)"]},
     {id:"hist-us",label:"US Legal History (Colonial – 20th Century)",dbs:["HeinOnline","LLMC Digital","Gale Primary Sources","Making of Modern Law: Primary Sources","Making of Modern Law: Trials, 1600–1926","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978"]},
-    {id:"hist-uk",label:"British / Anglo-American Legal History",dbs:["Legal Classics (HeinOnline)","LLMC Digital","Eighteenth Century Collections Online","Making of Modern Law: US & UK Legal Treatises, 1800–1926"]},
+    {id:"hist-uk",label:"British/Anglo-American Legal History",dbs:["Legal Classics (HeinOnline)","LLMC Digital","Eighteenth Century Collections Online","Making of Modern Law: US & UK Legal Treatises, 1800–1926"]},
     {id:"hist-civil",label:"Civil Rights, Race & Slavery",dbs:["ProQuest History Vault","American Civil Liberties Union, 1912–1990","Civil Rights and Social Justice (HeinOnline)","Slavery in America & the World (HeinOnline)"]},
     {id:"hist-crim",label:"Criminal Justice & Trial History",dbs:["Criminal Justice & Criminology (HeinOnline)","Crime, Punishment, and Popular Culture, 1790–1920","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978","Making of Modern Law: Trials, 1600–1926"]},
-    {id:"hist-for",label:"Foreign / Comparative Legal History",dbs:["Making of Modern Law: Foreign Primary Sources, 1600–1970","Basilica Online","Making of Modern Law: Foreign, Comparative & International Law, 1600–1926","LLMC Digital"]},
+    {id:"hist-for",label:"Foreign/Comparative Legal History",dbs:["Making of Modern Law: Foreign Primary Sources, 1600–1970","Basilica Online","Making of Modern Law: Foreign, Comparative & International Law, 1600–1926","LLMC Digital"]},
     {id:"hist-scotus",label:"Supreme Court Legal History",dbs:["History of Supreme Court Nominations (HeinOnline)","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978","Supreme Court Insight","U.S. Supreme Court Library (HeinOnline)"]},
   ]},
   {id:"tribal",label:"Tribal, Native American & Indigenous",sub:"Treaties, claims, tribal codes, indigenous law",dbs:["Indigenous Peoples of the Americas: History, Culture & Law","Indian Claims Insight"]},
@@ -480,13 +548,13 @@ const SOURCE = [
     {id:"primary-native",label:"Native American Law",dbs:["Indian Claims Insight","Indigenous Peoples of the Americas: History, Culture & Law"]},
     {id:"primary-ca",label:"California",dbs:["ProView (Thomson Reuters)","CEB OnLaw","Westlaw","LexisNexis"]},
     {id:"primary-const",label:"Constitutions",dbs:["Oxford Constitutions of the World","World Constitutions Illustrated (HeinOnline)","State Constitutions Illustrated (HeinOnline)"]},
-    {id:"primary-uk",label:"England / Wales / UK",dbs:["Westlaw","LexisNexis","ICLR.4","HeinOnline"]},
+    {id:"primary-uk",label:"England/Wales/UK",dbs:["Westlaw","LexisNexis","ICLR.4","HeinOnline"]},
     {id:"primary-foreign",label:"Other Foreign Law",dbs:["LawnB","Lexology Academic","ICLR.4"]},
   ]},
-  {id:"secondary",label:"Background Reading & Secondary Sources",sub:"Encyclopedias, treatises, law reviews, practice materials",children:[
+  {id:"secondary",label:"Background Reading and Secondary Sources",sub:"Encyclopedias, treatises, law reviews, practice materials",children:[
     {id:"sec-enc",label:"Encyclopedias or Subject Overview",dbs:["Elgar Concise Encyclopedias","Elgaronline Encyclopedias","Westlaw","LexisNexis"]},
     {id:"sec-treatise",label:"Book or Treatise on a Specific Area of Law",dbs:["ProView (Thomson Reuters)","Oxford Handbooks Online","Westlaw","LexisNexis","Bloomberg Law"]},
-    {id:"sec-journal",label:"Law Review / Journal Article",dbs:["Law Journal Library (HeinOnline)","SSRN","Index to Legal Periodicals & Books Full Text","JSTOR"]},
+    {id:"sec-journal",label:"Law Review/Journal Article",dbs:["Law Journal Library (HeinOnline)","SSRN","Index to Legal Periodicals & Books Full Text","JSTOR"]},
     {id:"sec-practice",label:"Practice Materials (deskbooks, forms, checklists)",dbs:["Bloomberg Law","CEB OnLaw","Hotshot","ProView (Thomson Reuters)"]},
     {id:"sec-guides",label:"Research Guides",dbs:["RCLL Research Guides"]},
   ]},
@@ -512,7 +580,7 @@ const SOURCE = [
     {id:"news-ca",label:"California News",dbs:["The Recorder"]},
     {id:"news-legal",label:"Legal News",dbs:["Bloomberg Law","Law.com","Law360"]},
     {id:"news-firm",label:"Law Firm & Legal Industry Intelligence",dbs:["Law.com","Law360","Intelligize"]},
-    {id:"news-subject",label:"Subject-Specific News (environmental, prison, etc.)",dbs:["E&E News","Environment & Energy Daily","Prison Legal News","WorldTradeLaw.net"]},
+    {id:"news-subject",label:"Subject Specific News Coverage",dbs:["E&E News","Environment & Energy Daily","Prison Legal News","WorldTradeLaw.net"]},
     {id:"news-scotus",label:"Supreme Court Coverage",dbs:["Supreme Court Brief"]},
   ]},
   {id:"factual",label:"Factual Research",sub:"Data, statistics, people, and organizations",children:[
@@ -522,13 +590,13 @@ const SOURCE = [
   {id:"archival",label:"Historical or Archival Materials",sub:"Pre-colonial, U.S., British, and foreign legal history",children:[
     {id:"arch-pre",label:"Pre-Colonial",dbs:["Basilica Online","Legal Classics (HeinOnline)"]},
     {id:"arch-us",label:"US Legal History (Colonial – 20th Century)",dbs:["HeinOnline","LLMC Digital","Gale Primary Sources","Making of Modern Law: Primary Sources","Making of Modern Law: Trials, 1600–1926","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978"]},
-    {id:"arch-uk",label:"British / Anglo-American Legal History",dbs:["Legal Classics (HeinOnline)","LLMC Digital","Eighteenth Century Collections Online","Making of Modern Law: US & UK Legal Treatises, 1800–1926"]},
+    {id:"arch-uk",label:"British/Anglo-American Legal History",dbs:["Legal Classics (HeinOnline)","LLMC Digital","Eighteenth Century Collections Online","Making of Modern Law: US & UK Legal Treatises, 1800–1926"]},
     {id:"arch-civil",label:"Civil Rights, Race & Slavery",dbs:["ProQuest History Vault","American Civil Liberties Union, 1912–1990","Civil Rights and Social Justice (HeinOnline)","Slavery in America & the World (HeinOnline)"]},
     {id:"arch-crim",label:"Criminal Justice & Trial History",dbs:["Criminal Justice & Criminology (HeinOnline)","Crime, Punishment, and Popular Culture, 1790–1920","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978","Making of Modern Law: Trials, 1600–1926"]},
-    {id:"arch-for",label:"Foreign / Comparative Legal History",dbs:["Making of Modern Law: Foreign Primary Sources, 1600–1970","Basilica Online","Making of Modern Law: Foreign, Comparative & International Law, 1600–1926","LLMC Digital"]},
+    {id:"arch-for",label:"Foreign/Comparative Legal History",dbs:["Making of Modern Law: Foreign Primary Sources, 1600–1970","Basilica Online","Making of Modern Law: Foreign, Comparative & International Law, 1600–1926","LLMC Digital"]},
     {id:"arch-scotus",label:"Supreme Court Legal History",dbs:["History of Supreme Court Nominations (HeinOnline)","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978","Supreme Court Insight","U.S. Supreme Court Library (HeinOnline)"]},
   ]},
-  {id:"ai-path",label:"AI Tools",sub:"AI-assisted research, drafting, and advocacy practice",dbs:["CICERO (Rhetoric)","Harvey","Legora","LexText AI","Westlaw","LexisNexis"]},
+  {id:"ai-path",label:"AI",sub:"AI-assisted research, drafting, and advocacy practice",dbs:["CICERO (Rhetoric)","Harvey","Legora","LexisNexis","Westlaw","LexText AI"]},
 ];
 
 /* ── state ── */
@@ -544,7 +612,10 @@ function setMode(m) {
     document.getElementById("pane-"+x).style.display = m===x ? "block" : "none";
     document.getElementById("card-"+x).classList.toggle("active", m===x);
   });
-  if (m === "browse" && !document.getElementById("pills").children.length) initBrowse();
+  if (m === "browse") {
+    if (!document.getElementById("pills").children.length) initBrowse();
+    else renderBrowse();
+  }
 }
 
 /* ── guided ── */
@@ -562,7 +633,7 @@ function findNode(id, nodes) {
   }
   return null;
 }
-function navigate(id, label) { stack.push({id, label}); renderGuide(); }
+function navigate(id) { const node = findNode(id, currentTree()); stack.push({id, label: node ? node.label : id}); renderGuide(); }
 function goBack(depth) { stack = stack.slice(0, depth); renderGuide(); }
 
 function dbCard(name) {
@@ -572,7 +643,7 @@ function dbCard(name) {
   const isSLS = SLS_SET.has(name);
   const isPW  = PW_SET.has(name);
   const isAI  = AI_SET.has(name);
-  return `<a class="db-card" href="${link}" target="_blank" rel="noopener noreferrer">
+  return `<a class="db-card${isPW ? " req-login" : ""}" href="${link}" target="_blank" rel="noopener noreferrer">
     <div class="db-name">${name}</div>
     ${desc ? `<div class="db-desc">${desc}</div>` : ""}
     <div class="db-badges">
@@ -594,23 +665,33 @@ function renderGuide() {
 
   const el = document.getElementById("guide-out");
   if (stack.length === 0) {
-    el.innerHTML = `<div class="choice-grid">${currentTree().map(n => `
-      <div class="choice" onclick="navigate('${n.id}', ${JSON.stringify(n.label)})">
+    el.innerHTML = `<div class="choice-grid">${currentTree().map(n =>
+      `<div class="choice" onclick="navigate('${n.id}')">
         <div class="choice-label">${n.label}</div>
         ${n.sub ? `<div class="choice-sub">${n.sub}</div>` : ""}
         <div class="choice-arrow">${n.children ? "Choose a subtype →" : "See databases →"}</div>
-      </div>`).join("")}</div>`;
+      </div>`
+    ).join("")}</div>`;
     return;
   }
 
   const node = findNode(stack[stack.length-1].id, currentTree());
   if (!node) { el.innerHTML = ""; return; }
 
-  let html = `<button class="back-btn" onclick="goBack(${stack.length-1})">← Back</button>`;
+  const root = findNode(stack[0].id, currentTree());
+  const maxDepth = root && root.children ? 2 : 1;
+  let stepHtml = `<div class="step-bar">`;
+  for (let i = 0; i < maxDepth; i++) {
+    const cls = i < stack.length - 1 ? "done" : (i === stack.length - 1 ? "active" : "");
+    stepHtml += `<div class="step-dot ${cls}"></div>`;
+  }
+  stepHtml += `<span class="step-label">Step ${stack.length} of ${maxDepth}</span></div>`;
+
+  let html = stepHtml + `<button class="back-btn" onclick="goBack(${stack.length-1})">← Back</button>`;
 
   if (node.children) {
     html += `<div class="choice-grid">${node.children.map(c => `
-      <div class="choice" onclick="navigate('${c.id}', ${JSON.stringify(c.label)})">
+      <div class="choice" onclick="navigate('${c.id}')">
         <div class="choice-label">${c.label}</div>
         <div class="choice-arrow">See databases →</div>
       </div>`).join("")}</div>`;
@@ -630,45 +711,122 @@ function renderGuide() {
   el.innerHTML = html;
 }
 
+function globalSearch(val) {
+  const q = document.getElementById('q');
+  if (q) q.value = val;
+  setMode('browse');
+}
+
 /* ── browse ── */
-const CATS = ["All", ...[...new Set(DBS.map(d=>d.c))].sort()];
+
+/* Category pills derived from guided path trees */
+const GUIDE_CATS = [
+  {key:"All", label:"All"},
+  "topic-group",
+  {key:"Administrative",                                            label:"Administrative"},
+  {key:"Arbitration",                                               label:"Arbitration"},
+  {key:"Constitutional",                                            label:"Constitutional"},
+  {key:"Corporate",                                                 label:"Corporate"},
+  {key:"Courts",                                                    label:"Courts"},
+  {key:"Criminal",                                                  label:"Criminal"},
+  {key:"Foreign, Comparative & International",                      label:"Foreign & Intl"},
+  {key:"Government & Politics",                                     label:"Gov't & Politics"},
+  {key:"Historical",                                                label:"Historical"},
+  {key:"Tribal, Native American & Indigenous",                      label:"Tribal & Indigenous"},
+  "source-group",
+  {key:"Finding Cases, Statutes, Regulations, or Constitutions",   label:"Cases & Statutes"},
+  {key:"Background Reading and Secondary Sources",                  label:"Secondary Sources"},
+  {key:"Legislative or Regulatory History",                        label:"Legislative History"},
+  {key:"Docket Research & Court Filings",                          label:"Dockets"},
+  {key:"Transactional Resources",                                   label:"Transactional"},
+  {key:"International, Foreign & Comparative",                      label:"Intl & Comp."},
+  {key:"Legal News & Current Awareness",                            label:"Legal News"},
+  {key:"Factual Research",                                          label:"Factual Research"},
+  {key:"Historical or Archival Materials",                          label:"Archival"},
+  {key:"AI",                                                        label:"AI"},
+];
+
+/* Build db → guided-path-categories map from the trees */
+const DB_CAT_MAP = {};
+(function() {
+  function walk(nodes, topLabel) {
+    for (const n of nodes) {
+      if (n.dbs) n.dbs.forEach(name => {
+        if (!DB_CAT_MAP[name]) DB_CAT_MAP[name] = new Set();
+        DB_CAT_MAP[name].add(topLabel);
+      });
+      if (n.children) walk(n.children, topLabel);
+    }
+  }
+  TOPIC.forEach(t => walk([t], t.label));
+  SOURCE.forEach(s => walk([s], s.label));
+})();
+
 function initBrowse() {
-  document.getElementById("pills").innerHTML = CATS.map(c =>
-    `<button class="pill${c===activeCat?" on":""}" onclick="setCat('${c.replace(/'/g,"\\'")}')"> ${c}</button>`
-  ).join("");
+  let topicPills = "", sourcePills = "", inTopic = false, inSource = false;
+  GUIDE_CATS.forEach((c, i) => {
+    if (c === "topic-group")  { inTopic = true;  inSource = false; return; }
+    if (c === "source-group") { inTopic = false; inSource = true;  return; }
+    if (!c || c.key === "All") return;
+    const btn = `<button class="pill${c.key===activeCat?" on":""}" data-idx="${i}" onclick="setCatIdx(${i})">${c.label}</button>`;
+    if (inTopic)  topicPills  += btn;
+    if (inSource) sourcePills += btn;
+  });
+  const allIdx = GUIDE_CATS.findIndex(c => c && c.key === "All");
+  document.getElementById("pills").innerHTML =
+    `<div class="pill-all-row"><button class="pill${activeCat==="All"?" on":""}" data-idx="${allIdx}" onclick="setCatIdx(${allIdx})">All</button></div>` +
+    `<div class="pill-group-row"><span class="pill-group">By topic</span><div class="pill-group-pills">${topicPills}</div></div>` +
+    `<div class="pill-group-row"><span class="pill-group">By source</span><div class="pill-group-pills">${sourcePills}</div></div>`;
   renderBrowse();
 }
-function setCat(c) {
-  activeCat = c;
-  document.querySelectorAll(".pill").forEach(b => b.classList.toggle("on", b.textContent.trim()===c));
+function setCatIdx(i) {
+  const c = GUIDE_CATS[i];
+  if (!c || typeof c === "string") return;
+  activeCat = c.key;
+  document.querySelectorAll("#pills button").forEach(b => {
+    const cat = GUIDE_CATS[parseInt(b.dataset.idx)];
+    b.classList.toggle("on", cat && cat.key === activeCat);
+  });
   renderBrowse();
+}
+function setCat(key) { /* kept for compatibility */
+  const i = GUIDE_CATS.findIndex(c => c && c.key === key);
+  if (i >= 0) setCatIdx(i);
 }
 function renderBrowse() {
   const q = (document.getElementById("q")||{value:""}).value.toLowerCase();
   let filtered = DBS.filter(d => {
-    const matchCat = activeCat==="All" || d.c===activeCat;
+    const matchCat = activeCat==="All" || (DB_CAT_MAP[d.n] && DB_CAT_MAP[d.n].has(activeCat));
     const matchQ = !q || d.n.toLowerCase().includes(q) || d.d.toLowerCase().includes(q) || d.c.toLowerCase().includes(q);
     return matchCat && matchQ;
   });
   document.getElementById("browse-meta").textContent = `${filtered.length} database${filtered.length!==1?"s":""}`;
   if (!filtered.length) { document.getElementById("browse-out").innerHTML='<div class="empty">No databases match your search.</div>'; return; }
+
+  function cardHtml(d) {
+    const isSLS = SLS_SET.has(d.n); const isPW = PW_SET.has(d.n); const isAI = AI_SET.has(d.n);
+    return `<a class="db-card${isPW ? " req-login" : ""}" href="${d.url}" target="_blank" rel="noopener noreferrer">
+      <div class="db-name">${d.n}</div>
+      <div class="db-desc">${d.d}</div>
+      <div class="db-badges">
+        ${isSLS?'<span class="badge b-sls">SLS only</span>':""}
+        ${isPW?'<span class="badge b-pw">personal login</span>':""}
+        ${isAI?'<span class="badge b-ai">AI tool</span>':""}
+      </div>
+    </a>`;
+  }
+
+  if (activeCat !== "All") {
+    document.getElementById("browse-out").innerHTML = `<div class="db-grid">${filtered.map(cardHtml).join("")}</div>`;
+    return;
+  }
+
   const grouped = {};
   filtered.forEach(d => { if (!grouped[d.c]) grouped[d.c]=[]; grouped[d.c].push(d); });
   document.getElementById("browse-out").innerHTML = Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b)).map(([cat,dbs]) => `
     <div class="section">
       <div class="sec-label">${cat}</div>
-      <div class="db-grid">${dbs.map(d => {
-        const isSLS = SLS_SET.has(d.n); const isPW = PW_SET.has(d.n); const isAI = AI_SET.has(d.n);
-        return `<a class="db-card" href="${d.url}" target="_blank" rel="noopener noreferrer">
-          <div class="db-name">${d.n}</div>
-          <div class="db-desc">${d.d}</div>
-          <div class="db-badges">
-            ${isSLS?'<span class="badge b-sls">SLS only</span>':""}
-            ${isPW?'<span class="badge b-pw">personal login</span>':""}
-            ${isAI?'<span class="badge b-ai">AI tool</span>':""}
-          </div>
-        </a>`;
-      }).join("")}</div>
+      <div class="db-grid">${dbs.map(cardHtml).join("")}</div>
     </div>`).join("");
 }
 
