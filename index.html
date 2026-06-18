@@ -130,7 +130,7 @@
   }
   .choice:hover { border-color: rgba(140,21,21,0.4); background: var(--stanford-light); box-shadow: var(--shadow-sm); }
   .choice-label { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.3; }
-  .choice-sub { font-size: 11px; color: var(--text2); margin-top: 4px; line-height: 1.4; flex: 1; }
+  .choice-sub { font-size: 12px; color: var(--text2); margin-top: 4px; line-height: 1.4; flex: 1; }
   .choice-arrow { font-size: 14px; color: var(--stanford); margin-top: 10px; opacity: 0.55; line-height: 1; }
 
   /* ── Back button ── */
@@ -144,8 +144,8 @@
 
   /* ── DB grid ── */
   .results-label {
-    font-size: 10.5px; font-weight: 700; color: var(--text3); text-transform: uppercase;
-    letter-spacing: .1em; margin-bottom: 12px; padding-bottom: 10px;
+    font-size: 11.5px; font-weight: 700; color: var(--text3); text-transform: uppercase;
+    letter-spacing: .08em; margin-bottom: 12px; padding-bottom: 10px;
     border-bottom: 1px solid var(--border);
   }
   .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
@@ -157,9 +157,9 @@
   }
   .db-card:hover { border-color: rgba(140,21,21,0.35); box-shadow: var(--shadow-sm); }
   .db-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.3; }
-  .db-desc { font-size: 11.5px; color: var(--text2); margin-top: 4px; line-height: 1.5; flex: 1; }
+  .db-desc { font-size: 12.5px; color: var(--text2); margin-top: 4px; line-height: 1.5; flex: 1; }
   .db-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 9px; }
-  .badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
   .b-sls { background: var(--blue-bg); color: var(--blue-text); }
   .b-pw  { background: var(--amber-bg); color: var(--amber-text); }
   .b-ai  { background: var(--purple-bg); color: var(--purple-text); }
@@ -181,7 +181,7 @@
     width: 48px; background: linear-gradient(to right, transparent, var(--bg));
   }
   .pill-group {
-    min-width: 66px; font-size: 9.5px; font-weight: 700; color: var(--text3);
+    min-width: 66px; font-size: 10.5px; font-weight: 700; color: var(--text3);
     text-transform: uppercase; letter-spacing: .08em; white-space: nowrap;
     text-align: right; border-right: 1.5px solid var(--border2);
     padding: 5px 9px 0 0; flex-shrink: 0;
@@ -199,11 +199,11 @@
   }
   .pill:hover { background: var(--bg2); color: var(--text); border-color: var(--border2); }
   .pill.on { background: var(--stanford); border-color: var(--stanford); color: #fff; }
-  .browse-meta { font-size: 12px; color: var(--text3); margin-bottom: 14px; }
+  .browse-meta { font-size: 13px; color: var(--text3); margin-bottom: 14px; }
   .section { margin-bottom: 22px; }
   .sec-label {
-    font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase;
-    letter-spacing: .09em; padding-bottom: 7px; border-bottom: 1.5px solid var(--border);
+    font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase;
+    letter-spacing: .07em; padding-bottom: 7px; border-bottom: 1.5px solid var(--border);
     margin-bottom: 10px;
   }
 
@@ -260,7 +260,7 @@
   .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: all 0.2s; }
   .step-dot.done { background: rgba(140,21,21,0.32); }
   .step-dot.active { background: var(--stanford); width: 20px; border-radius: 99px; }
-  .step-label { font-size: 10.5px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .09em; margin-left: 5px; }
+  .step-label { font-size: 11.5px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; margin-left: 5px; }
 
   /* ── Home landing ── */
   .home-pane { padding: 4px 0 0; }
@@ -335,7 +335,7 @@
 
   <!-- HOME PANE -->
   <div id="pane-home" class="home-pane">
-    <p class="home-desc">The Robert Crown Law Library provides access to <strong>114+ research databases</strong> — covering primary sources, secondary literature, international law, empirical data, news, and more.</p>
+    <p class="home-desc">The Robert Crown Law Library provides access to <strong>114+ research databases</strong> covering primary sources, secondary literature, international law, empirical data, news, and more.</p>
     <p class="home-start">New here? <a onclick="setMode('guided')">Guided paths</a> asks two questions and recommends the right databases for your research question.</p>
   </div>
 
