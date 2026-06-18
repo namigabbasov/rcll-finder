@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RCLL Database Finder — Stanford Law School</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg2: #f7f7f5;
+    --bg3: #f0efe9;
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #8a8a84;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --stanford: #8C1515;
+    --stanford-light: #fdf0f0;
+    --blue-bg: #E6F1FB;
+    --blue-text: #0C447C;
+    --amber-bg: #FAEEDA;
+    --amber-text: #633806;
+    --purple-bg: #EEEDFE;
+    --purple-text: #3C3489;
+    --green-bg: #EAF3DE;
+    --green-text: #27500A;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg3);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--stanford);
+    color: #fff;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    gap: 12px;
+  }
+  .site-header .logo { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .site-header .logo span { opacity: 0.7; font-weight: 400; }
+  .site-header a { color: rgba(255,255,255,0.75); font-size: 13px; text-decoration: none; margin-left: auto; }
+  .site-header a:hover { color: #fff; }
+
+  /* ── Layout ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  /* ── Page title ── */
+  .page-title { margin-bottom: 20px; }
+  .page-title h1 { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .page-title p { font-size: 14px; color: var(--text2); margin-top: 5px; }
+  .page-title p a { color: var(--stanford); text-decoration: none; }
+  .page-title p a:hover { text-decoration: underline; }
+
+  /* ── Entry mode cards ── */
+  .entry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .entry-card {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    text-align: left;
+  }
+  .entry-card:hover { border-color: var(--border2); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .entry-card.active { border-color: var(--stanford); box-shadow: 0 0 0 3px rgba(140,21,21,0.08); }
+  .entry-card .icon { font-size: 22px; margin-bottom: 10px; }
+  .entry-card h2 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .entry-card p { font-size: 13px; color: var(--text2); line-height: 1.45; }
+  .entry-card .coming-soon {
+    display: inline-block; margin-top: 8px; font-size: 11px; padding: 2px 8px;
+    background: var(--amber-bg); color: var(--amber-text); border-radius: 99px;
+  }
+
+  /* ── Divider ── */
+  .divider { height: 1px; background: var(--border); margin: 4px 0 24px; }
+
+  /* ── Tabs (within guided) ── */
+  .tab-bar { display: flex; gap: 0; border-bottom: 1.5px solid var(--border); margin-bottom: 20px; }
+  .tab-btn {
+    font-size: 13px; padding: 9px 18px; background: transparent;
+    border: none; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px;
+    color: var(--text2); cursor: pointer; font-weight: 500;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.on { color: var(--stanford); border-bottom-color: var(--stanford); }
+
+  /* ── Breadcrumb ── */
+  .crumb { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-height: 24px; margin-bottom: 14px; }
+  .crumb-item { font-size: 13px; color: var(--text3); cursor: pointer; }
+  .crumb-item:hover { color: var(--text); }
+  .crumb-item.active { color: var(--text); font-weight: 500; cursor: default; }
+  .crumb-sep { font-size: 13px; color: var(--border2); }
+
+  /* ── Choice grid ── */
+  .choice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px; margin-bottom: 20px; }
+  .choice {
+    background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 16px; cursor: pointer; text-align: left; transition: border-color 0.12s;
+  }
+  .choice:hover { border-color: var(--stanford); background: var(--stanford-light); }
+  .choice-label { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .choice-sub { font-size: 11px; color: var(--text2); margin-top: 4px; line-height: 1.4; }
+  .choice-arrow { font-size: 11px; color: var(--text3); margin-top: 8px; }
+
+  /* ── Back button ── */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 12px;
+    color: var(--text2); background: transparent; border: 1px solid var(--border2);
+    border-radius: 99px; padding: 5px 13px; cursor: pointer; margin-bottom: 14px;
+  }
+  .back-btn:hover { color: var(--text); border-color: var(--stanford); }
+
+  /* ── DB grid ── */
+  .results-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+  .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 7px; }
+  .db-card {
+    display: block; background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 13px 15px; text-decoration: none;
+    transition: border-color 0.12s;
+  }
+  .db-card:hover { border-color: var(--stanford); }
+  .db-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .db-desc { font-size: 11px; color: var(--text2); margin-top: 3px; line-height: 1.5; }
+  .db-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 7px; }
+  .badge { font-size: 10px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
+  .b-sls { background: var(--blue-bg); color: var(--blue-text); }
+  .b-pw  { background: var(--amber-bg); color: var(--amber-text); }
+  .b-ai  { background: var(--purple-bg); color: var(--purple-text); }
+  .b-ca  { background: var(--green-bg); color: var(--green-text); }
+
+  /* ── Browse controls ── */
+  .browse-bar { display: flex; gap: 8px; margin-bottom: 10px; }
+  .browse-bar input {
+    flex: 1; font-size: 14px; padding: 9px 12px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border); background: var(--bg); color: var(--text);
+    outline: none;
+  }
+  .browse-bar input:focus { border-color: var(--stanford); }
+  .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill {
+    font-size: 11px; padding: 4px 11px; border-radius: 99px;
+    border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer;
+  }
+  .pill:hover { background: var(--bg2); color: var(--text); }
+  .pill.on { background: var(--stanford); border-color: var(--stanford); color: #fff; }
+  .browse-meta { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
+  .section { margin-bottom: 20px; }
+  .sec-label {
+    font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase;
+    letter-spacing: .08em; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+
+  /* ── Escape ── */
+  .escape { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text2); }
+  .escape a { color: var(--stanford); text-decoration: none; cursor: pointer; }
+  .escape a:hover { text-decoration: underline; }
+
+  /* ── Empty ── */
+  .empty { text-align: center; padding: 40px 0; color: var(--text2); font-size: 14px; }
+
+  /* ── AI placeholder ── */
+  .ai-placeholder {
+    background: var(--bg); border: 1.5px dashed var(--border2); border-radius: var(--radius);
+    padding: 32px 24px; text-align: center;
+  }
+  .ai-placeholder .ai-icon { font-size: 32px; margin-bottom: 12px; }
+  .ai-placeholder h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .ai-placeholder p { font-size: 13px; color: var(--text2); max-width: 420px; margin: 0 auto 16px; line-height: 1.55; }
+  .ai-placeholder .ai-input-row { display: flex; gap: 8px; max-width: 480px; margin: 0 auto; }
+  .ai-placeholder input {
+    flex: 1; font-size: 14px; padding: 9px 13px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border2); background: var(--bg2); color: var(--text); outline: none;
+  }
+  .ai-placeholder button {
+    font-size: 13px; padding: 9px 18px; border-radius: var(--radius-sm);
+    background: var(--stanford); color: #fff; border: none; cursor: not-allowed; opacity: 0.65;
+  }
+  .ai-badge-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
+  .ai-badge { font-size: 11px; padding: 3px 10px; border-radius: 99px; background: var(--purple-bg); color: var(--purple-text); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">Stanford Law School <span>/ Robert Crown Law Library</span></div>
+  <a href="https://law.stanford.edu/robert-crown-law-library/legal-databases/" target="_blank">Full A–Z list ↗</a>
+</header>
+
+<div class="container">
+
+  <div class="page-title">
+    <h1>Legal Database Finder</h1>
+    <p>Find the right research database — guided paths, full browse, or AI-powered search (coming soon). Questions? <a href="mailto:reference@law.stanford.edu">reference@law.stanford.edu</a> · 650 725.0800</p>
+  </div>
+
+  <!-- Entry mode -->
+  <div class="entry-grid">
+    <div class="entry-card active" id="card-guided" onclick="setMode('guided')">
+      <div class="icon">🗺️</div>
+      <h2>Guided paths</h2>
+      <p>Answer a few questions about your research and get targeted database recommendations.</p>
+    </div>
+    <div class="entry-card" id="card-browse" onclick="setMode('browse')">
+      <div class="icon">📚</div>
+      <h2>Browse all databases</h2>
+      <p>Search and filter the full list of 100+ databases by name, category, or access type.</p>
+    </div>
+    <div class="entry-card" id="card-ai" onclick="setMode('ai')">
+      <div class="icon">✨</div>
+      <h2>AI search</h2>
+      <p>Describe your research question in plain language and get smart database recommendations.</p>
+      <span class="coming-soon">Coming soon</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- GUIDED PANE -->
+  <div id="pane-guided">
+    <div class="tab-bar">
+      <button class="tab-btn on" id="btn-topic" onclick="setTree('topic')">By topic</button>
+      <button class="tab-btn" id="btn-source" onclick="setTree('source')">By source type</button>
+    </div>
+    <div class="crumb" id="crumb"></div>
+    <div id="guide-out"></div>
+  </div>
+
+  <!-- BROWSE PANE -->
+  <div id="pane-browse" style="display:none">
+    <div class="browse-bar">
+      <input type="search" id="q" placeholder="Search databases by name or description…" oninput="renderBrowse()">
+    </div>
+    <div class="pill-row" id="pills"></div>
+    <div class="browse-meta" id="browse-meta"></div>
+    <div id="browse-out"></div>
+  </div>
+
+  <!-- AI PANE -->
+  <div id="pane-ai" style="display:none">
+    <div class="ai-placeholder">
+      <div class="ai-icon">✨</div>
+      <h3>AI-powered database search</h3>
+      <p>Describe your research question in plain English — "I need to find cases about corporate directors' fiduciary duties in Delaware" — and the AI will recommend the best databases and explain why.</p>
+      <div class="ai-input-row">
+        <input type="text" placeholder="Describe your research question…" disabled>
+        <button disabled>Search</button>
+      </div>
+      <div class="ai-badge-row">
+        <span class="ai-badge">Smart recommendations</span>
+        <span class="ai-badge">Explains its reasoning</span>
+        <span class="ai-badge">Covers all 100+ databases</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   DATABASE MASTER LIST — real URLs from PDF
+   ══════════════════════════════════════════════ */
+const DBS = [
+  // A
+  { n:"Almanac of the Federal Judiciary", c:"Courts & Litigation", url:"https://ezproxy.law.stanford.edu/login?url=https://almanacofthefederaljudiciary.com", ac:[], d:"Judicial profiles of every federal judge, all key bankruptcy judges, and magistrate judges." },
+  { n:"American Civil Liberties Union, 1912–1990", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://link.gale.com/apps/ACLU?u=stan90222", ac:[], d:"ACLU records on free speech, race, immigration, and civil liberties; textual analysis tools." },
+  { n:"American Lawyer", c:"Legal News", url:"https://ezproxy.law.stanford.edu/login?url=https://www.law.com/americanlawyer/", ac:["sls"], d:"Daily news on the U.S. and global legal industry, law firms, and Am Law 100/200 rankings." },
+  { n:"Antitrust Law (Areeda & Hovenkamp)", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://my.vitallaw.com/#/publication/Antitrust/WKUS_TAL_15288?daId=WKUS_TAL_15288", ac:[], d:"Definitive treatise on antitrust law: mergers, IP, predatory pricing, and monopolization." },
+  // B
+  { n:"BankruptcyData", c:"Courts & Litigation", url:"https://ezproxy.law.stanford.edu/login?url=https://app.bankruptcydata.com", ac:["sls"], d:"Near-real-time case info for all corporate bankruptcies in U.S. courts, plus 40 years of history." },
+  { n:"Basilica Online", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://referenceworks.brillonline.com/browse/basilica-online", ac:[], d:"Fully searchable 17-volume Basilica text — the primary source for Byzantine law." },
+  { n:"Bloomberg Law", c:"Primary Platforms", url:"https://www.bloomberglaw.com/", ac:["pw"], d:"Primary and secondary legal content, federal/state dockets, BNA content, and transactional precedents." },
+  { n:"Blumberg on Corporate Groups", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://my.vitallaw.com/#/publication/SecuritiesCorporate/WKUS_TAL_15264?daId=WKUS_TAL_152644", ac:[], d:"Examines corporate group law across solvency and bankruptcy; statutory and case law (federal and state)." },
+  // C
+  { n:"CEB OnLaw", c:"California Law", url:"https://ezproxy.law.stanford.edu/login?url=https://onlaw.ceb.com", ac:["sls"], d:"California practice guides — business, criminal, employment, estate, family, and real property law." },
+  { n:"CICERO (Rhetoric)", c:"AI Tools", url:"https://bit.ly/rcll-aiessentials", ac:["sls","ai"], d:"AI-powered advocacy training with dynamic simulations. Requires AI Essentials Training." },
+  { n:"Civil Rights and Social Justice (HeinOnline)", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Welcome", ac:[], d:"Materials on civil rights movements, social justice, and related legal history." },
+  { n:"ClimateWire", c:"Legal News", url:"https://stanford.idm.oclc.org/login?qurl=https://subscriber.politicopro.com/eenews/pub/climatewire", ac:[], d:"E&E Publishing's daily news on climate policy and its effects on business and the environment." },
+  { n:"Code of Federal Regulations (HeinOnline)", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=cfr", ac:[], d:"Complete CFR from 1938 to present with Title/Part/Section Quick Locator and Citation tools." },
+  { n:"Competition Policy International", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://www.pymnts.com/cpi", ac:["sls"], d:"Peer-reviewed antitrust journal and Antitrust Chronicle for the global competition community." },
+  { n:"CourtLink", c:"Courts & Litigation", url:"https://advance.lexis.com/courtlinkhome", ac:["pw"], d:"Lexis Plus's federal and state court docket research tool for filed court documents." },
+  { n:"Crime, Punishment, and Popular Culture, 1790–1920", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://link.gale.com/apps/CPPC?u=stanford_law", ac:[], d:"2.1M pages of 19th-century trial transcripts, police reports, and criminal literature." },
+  { n:"Criminal Justice & Criminology (HeinOnline)", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=agopinions&set_as_cursor=clear", ac:[], d:"Historical criminal justice content organized into 16 subject areas." },
+  // E
+  { n:"E&E News", c:"Legal News", url:"https://stanford.idm.oclc.org/login?qurl=https://subscriber.politicopro.com/eenews", ac:[], d:"Suite of environmental/energy publications: E&E Daily, ClimateWire, EnergyWire, Greenwire." },
+  { n:"Eighteenth Century Collections Online", c:"Legal History", url:"https://login.laneproxy.stanford.edu/login?url=https://link.gale.com/apps/llconverter/itweb/stan90222?db=ECCO", ac:[], d:"136,000+ 18th-century titles including 31 editions of Blackstone's Commentaries." },
+  { n:"Elgar Concise Encyclopedias", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://www.elgaronline.com/browse?access=user&bot=bot&ct_6=encyclopedia&level=parent&pageSize=10&sort=titlesort&t=encyclopedia", ac:[], d:"Deep overviews across Animal Law, Aviation, AI & Law, Space Law, Sports Law, and more." },
+  { n:"Elgar Encyclopedia of Environmental Law", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://www.elgaronline.com/display/book/9781785369520/9781785369520.xml", ac:[], d:"Covers climate change law, biodiversity, compliance, and multilateral environmental treaties." },
+  { n:"Elgar Encyclopedia of International Economic Law", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://www.elgaronline.com/display/book/9781800882324/9781800882324.xml", ac:[], d:"200+ entries on WTO, IMF, IP rights, energy, and international economic institutions." },
+  { n:"Elgaronline Encyclopedias", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://www.elgaronline.com/browse?submittedFilterId=by-type-taxonomy&access=user&level=parent&pageSize=10&sort=datedescending&ct_6=encyclopedia", ac:[], d:"Authoritative encyclopedias on international economic law, private international law, law & economics, and environmental law." },
+  { n:"EMBASE", c:"Interdisciplinary", url:"https://login.laneproxy.stanford.edu/login?url=https://www.embase.com/", ac:[], d:"32M+ biomedical and pharmacological records — essential for health law research." },
+  { n:"Encyclopedia of Law and Economics", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://www.elgaronline.com/display/book/9781782547457/9781782547457.xml", ac:[], d:"166 entries across tort, labor, criminal, antitrust, property, and contract law and economics." },
+  { n:"Encyclopedia of Private International Law", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://www.elgaronline.com/display/book/9781782547235/9781782547235.xml", ac:[], d:"Private international law regimes of 80 countries with English translations of national codifications." },
+  { n:"EnergyWire", c:"Legal News", url:"https://stanford.idm.oclc.org/login?qurl=https://subscriber.politicopro.com/eenews/pub/energywire", ac:[], d:"Daily news on environmental policy, electric utilities, and unconventional energy industries." },
+  { n:"Environment & Energy Daily", c:"Legal News", url:"https://stanford.idm.oclc.org/login?qurl=https://subscriber.politicopro.com/eenews/pub/daily", ac:[], d:"E&E's flagship service covering federal legislation, regulation, and legal decisions." },
+  // F
+  { n:"Florida-UCLA-LoPucki Bankruptcy Research Database", c:"Courts & Litigation", url:"https://lopucki.law.ufl.edu/", ac:[], d:"Data on 1,000+ large public company bankruptcies since 1979 — 5 datasets, quantitative analytics." },
+  { n:"Foreign & International Law Resources Database (HeinOnline)", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=intyb", ac:[], d:"ASIL publications, Hague PCIJ series, international yearbooks, and EU Court of Justice reports." },
+  { n:"Foreign Law Guide", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://referenceworks.brill.com/display/db/flg", ac:[], d:"Bibliographic guide to legislation and secondary sources for approximately 190 jurisdictions." },
+  // G
+  { n:"Gale Primary Sources", c:"Legal History", url:"https://stanford.idm.oclc.org/login?url=https://link.gale.com/apps/GDCS?u=stan90222", ac:[], d:"Primary source archives including historical newspapers and government documents." },
+  { n:"Gallup Analytics", c:"Interdisciplinary", url:"https://stanford.idm.oclc.org/login?url=https://analyticscampus.gallup.com", ac:[], d:"80+ years of U.S. surveys and global polls from 160+ countries, filterable by demographics." },
+  { n:"Goldstein on Copyright", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://my.vitallaw.com/#/publication/IP/WKUS_TAL_15004?daId=WKUS_TAL_15004", ac:[], d:"Comprehensive copyright treatise from registration to litigation, including digital/entertainment issues." },
+  { n:"Greenwire", c:"Legal News", url:"https://stanford.idm.oclc.org/login?qurl=https://subscriber.politicopro.com/eenews/pub/greenwire", ac:[], d:"Daily coverage of major environmental regulations, legislation, court cases, and natural resource policy." },
+  // H
+  { n:"Hague Academy Collected Courses Online", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=hague", ac:[], d:"Complete archive of Hague Academy international law courses from 1923 — searchable by title, subject, or author." },
+  { n:"Harvey", c:"AI Tools", url:"https://bit.ly/rcll-aiessentials", ac:["sls","ai"], d:"Generative AI for case analysis, summarization, and document drafting. Requires AI Essentials Training." },
+  { n:"HeinOnline", c:"Primary Platforms", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Welcome", ac:["pw"], d:"Scanned historical and modern legal materials: journals, treaties, session laws, legal classics." },
+  { n:"History of Supreme Court Nominations (HeinOnline)", c:"Courts & Litigation", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?index=supcourt&collection=supcourt", ac:[], d:"Senate Judiciary Committee hearings on successful and unsuccessful Supreme Court nominations." },
+  { n:"Hotshot", c:"Treatises", url:"https://www.hotshotlegal.com/", ac:[], d:"Video-based legal and business learning platform for law students. Registration required." },
+  // I
+  { n:"ICLR.4", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://www.iclr.co.uk/", ac:[], d:"Official Law Reports for England & Wales from 1865 — Industrial Cases, Business Law, Public Sector reports." },
+  { n:"Immigration Law & Policy in the U.S. (HeinOnline)", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?index=immigration&collection=immigration", ac:[], d:"Historical immigration documents from 19th century to present, including BIA Precedent Decisions." },
+  { n:"Index to Foreign Legal Periodicals (HeinOnline)", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=iflp", ac:[], d:"Multilingual index to 500+ legal journals worldwide covering international and comparative law from 1984." },
+  { n:"Index to Legal Periodicals & Books Full Text", c:"Journals & Periodicals", url:"https://ezproxy.law.stanford.edu/login?url=https://search.ebscohost.com/login.aspx?authtype=ip,uid&profile=ehost&defaultdb=lft", ac:[], d:"Law journals and books from 1981; full text for 400+ periodicals from 1995." },
+  { n:"Index to Legal Periodicals Retrospective: 1908–1981", c:"Journals & Periodicals", url:"https://ezproxy.law.stanford.edu/login?url=https://search.ebscohost.com/login.aspx?authtype=ip,uid&profile=ehost&defaultdb=lpr", ac:[], d:"540,000 articles from 750+ legal periodicals in U.S., Canada, UK, Ireland, Australia, and NZ." },
+  { n:"Indian Claims Insight", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://indianclaims.proquest.com?accountid=14026", ac:[], d:"Documents on Native American land claims, removal policies, and Indian Claims Commission decisions." },
+  { n:"Indigenous Peoples of the Americas: History, Culture & Law", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=amindian", ac:[], d:"4,000 titles on indigenous American law: treaties, federal case law, and tribal codes." },
+  { n:"Intellectual Property Law Collection (HeinOnline)", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=intprop&set_as_cursor=clear", ac:[], d:"Legislative histories, treatises, and documents on copyrights, patents, and trademarks." },
+  { n:"Intelligize", c:"Courts & Litigation", url:"https://apps.intelligize.com/", ac:["pw"], d:"Securities platform: SEC filings, no-action letters, SEDAR, and private placement memos." },
+  { n:"Investor-State LawGuide", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://app.investorstatelawguide.com/Dashboard", ac:["sls"], d:"Investment treaty law: NAFTA/ICSID dispute documents, rules, and arbitration materials." },
+  // J
+  { n:"JSTOR", c:"Journals & Periodicals", url:"https://stanford.idm.oclc.org/login?url=https://www.jstor.org", ac:[], d:"Multidisciplinary archive of academic journals, books, and primary sources." },
+  { n:"Jus Mundi", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://jusmundi.com/en/", ac:[], d:"International law and arbitration from 100+ institutions: WTO, ICSID, ICJ, ICC, and more." },
+  // K
+  { n:"Kluwer Arbitration", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://www.kluwerarbitration.com", ac:[], d:"International commercial arbitration: case law, commentary, conventions, legislation, and rules." },
+  { n:"Kluwer Law Online", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://www.kluwerlawonline.com", ac:[], d:"Journals and manuals on international law; encyclopedias on constitutional, IP, and criminal law." },
+  // L
+  { n:"Law Journal Library (HeinOnline)", c:"Journals & Periodicals", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=journals", ac:[], d:"2,000+ law and law-related periodicals from first issue through current." },
+  { n:"Law.com", c:"Legal News", url:"https://ezproxy.law.stanford.edu/login?url=https://www.law.com", ac:["sls"], d:"Legal news and rankings — American Lawyer, NLJ, The Recorder." },
+  { n:"Law360", c:"Legal News", url:"https://ezproxy.law.stanford.edu/login?url=https://www.law360.com", ac:["sls"], d:"Legal news: lawsuit filings, litigation, settlements, verdicts, and courts; browsable by topic." },
+  { n:"LawnB", c:"International & Foreign", url:"https://stanford.idm.oclc.org/login?qurl=https://stanford.lawnb.com", ac:[], d:"Korean legal database: cases, laws and regulations, legal articles, forms, administrative law." },
+  { n:"Leadership Connect", c:"Interdisciplinary", url:"https://api.leadershipconnect.io/v1/auth/saml2/login/1463a17e-88a7-4f61-b3c1-f146ca81cbcf", ac:[], d:"Profiles and contact info for leaders in U.S. government, courts, Fortune 500, and law firms." },
+  { n:"Legal Classics (HeinOnline)", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=beal", ac:[], d:"Classic legal works by Blackstone, Bentham, Story, Maitland, Cardozo, and more." },
+  { n:"Legal Scholarship Network (SSRN)", c:"Journals & Periodicals", url:"https://www.ssrn.com/lsn/index.html", ac:[], d:"Working papers, pre-prints, and articles across all areas of law; weekly job listings." },
+  { n:"Legora", c:"AI Tools", url:"https://bit.ly/rcll-aiessentials", ac:["sls","ai"], d:"AI-assisted document review, analysis, and drafting. Requires AI Essentials Training." },
+  { n:"LexisNexis", c:"Primary Platforms", url:"https://www.lexisnexis.com/lawschool/lsp/p/facultyhome.aspx?lc=LawSchoolPortal/Signin", ac:["pw"], d:"Federal and state case law, statutes, regulations, Shepard's citator." },
+  { n:"Lexology Academic", c:"International & Foreign", url:"https://academic.lexology.com/", ac:["sls"], d:"Global Arbitration Review, Global Competition Review, IAM, Latin Lawyer, World Trademark Review." },
+  { n:"LexText AI", c:"AI Tools", url:"https://bit.ly/rcll-aiessentials", ac:["sls","ai"], d:"AI-assisted litigation document drafting with step-by-step support. Requires AI Essentials Training." },
+  { n:"LLMC Digital", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://discover.llmc.com", ac:[], d:"Non-profit cooperative with scanned law and history titles: U.S., UK, Canada, Germany, international." },
+  // M
+  { n:"Making of Modern Law: Foreign, Comparative & International Law, 1600–1926", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://link.gale.com/apps/MMLF?u=stanford_law", ac:[], d:"Foreign legal treatises and encyclopedias from Grotius, Vattel, Wheaton, and others." },
+  { n:"Making of Modern Law: Foreign Primary Sources, 1600–1970", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://link.gale.com/apps/MLFP?u=stanford_law", ac:[], d:"Historical session laws and codes from Europe, Latin America, Canada, Africa, and Asia." },
+  { n:"Making of Modern Law: Primary Sources", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://link.gale.com/apps/MMLP?u=stanford_law", ac:[], d:"American colonial records, state codes, and constitutional convention documents, 1620–1970." },
+  { n:"Making of Modern Law: Trials, 1600–1926", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://link.gale.com/apps/MMLT?u=stanford_law", ac:[], d:"Legal records from historical Anglo-American trials; Harvard, Yale, and the British Library." },
+  { n:"Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978", c:"Courts & Litigation", url:"https://ezproxy.law.stanford.edu/login?url=https://link.gale.com/apps/SCRB?u=stanford_law", ac:[], d:"SCOTUS opinions, briefs, oral transcripts, and certiorari petitions from 1832–1978." },
+  { n:"Making of Modern Law: US & UK Legal Treatises, 1800–1926", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://link.gale.com/apps/MOML?u=stanford_law", ac:[], d:"Historical American and British casebooks, practice manuals, and pamphlets." },
+  { n:"Max Planck Encyclopedia of Comparative Constitutional Law", c:"International & Foreign", url:"https://stanford.idm.oclc.org/login?qurl=https://oxcon.ouplaw.com/home/MPECCOL", ac:[], d:"Comparative constitutional law — human rights, governmental structures, constitutional design." },
+  { n:"Max Planck Encyclopedia of Public International Law", c:"International & Foreign", url:"https://searchworks.stanford.edu/view/9537395", ac:[], d:"Peer-reviewed articles on public international law. Open Access until March 2027." },
+  // N
+  { n:"National Law Journal", c:"Legal News", url:"https://ezproxy.law.stanford.edu/login?url=https://www.law.com/nationallawjournal/", ac:["sls"], d:"Federal and state court litigation news, legislative updates, and opinion pieces." },
+  { n:"National Survey of State Laws (HeinOnline)", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?index=nssl/nasustl&collection=nssl", ac:[], d:"State-by-state comparisons of current laws with historical year comparisons." },
+  // O
+  { n:"Oxford Bibliographies", c:"Treatises", url:"https://stanford.idm.oclc.org/login?qurl=https://academic.oup.com/oxford-bibliographies", ac:[], d:"Curated resource guides for international law, criminology, public health, and environment." },
+  { n:"Oxford Constitutions of the World", c:"International & Foreign", url:"https://stanford.idm.oclc.org/login?qurl=https://oxcon.ouplaw.com/home/OCW", ac:[], d:"English-language translations of constitutions worldwide, with jurisdictional commentary and historical versions." },
+  { n:"Oxford Handbooks Online", c:"Treatises", url:"https://stanford.idm.oclc.org/login?qurl=https://academic.oup.com/oxford-handbooks-online", ac:[], d:"Full-text Oxford Handbooks in criminology, law, and related fields — downloadable PDFs." },
+  { n:"Oxford Historical Treaties", c:"International & Foreign", url:"https://stanford.idm.oclc.org/login?qurl=https://opil.ouplaw.com/home/OHT", ac:[], d:"Historical treaties from 1648–1919, browsable by type, region, treaty party, and date." },
+  { n:"Oxford Reports on International Law", c:"International & Foreign", url:"https://stanford.idm.oclc.org/login?qurl=https://opil.ouplaw.com/home/ORIL", ac:[], d:"Public international case law from EU courts, ICSID, human rights, and investment tribunals." },
+  { n:"Oxford Scholarship Online", c:"Treatises", url:"https://stanford.idm.oclc.org/login?qurl=https://academic.oup.com/pages/oxford-scholarship-online", ac:[], d:"Full-text Oxford University Press scholarly books across law and political science." },
+  // P
+  { n:"PolicyMap", c:"Interdisciplinary", url:"https://stanford.idm.oclc.org/login?url=https://stanford.policymap.com/maps", ac:[], d:"Demographic, housing, crime, and health data by census tract, zip code, and state." },
+  { n:"Prison Legal News", c:"Legal News", url:"https://www.prisonlegalnews.org/", ac:["sls"], d:"Monthly coverage of criminal justice issues and prisoners' rights civil litigation since 1990." },
+  { n:"ProQuest Congressional", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://search.proquest.com/congressional?accountid=14026", ac:["pw"], d:"Congressional documents 1789–present: hearings, reports, records, member profiles, and bills." },
+  { n:"ProQuest History Vault", c:"Legal History", url:"https://stanford.idm.oclc.org/login?url=https://search.proquest.com/historyvault?accountid=14026", ac:[], d:"Digitized primary sources on Civil Rights, slavery, women's studies, and American politics." },
+  { n:"ProQuest Legislative Insight", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://www.proquest.com/legislative?accountid=14026", ac:[], d:"Compiled federal legislative histories: bill versions, Congressional Record excerpts, CRS reports." },
+  { n:"ProQuest Regulatory Insight", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://regulatoryinsight.proquest.com/regulatoryinsight?accountid=14026", ac:[], d:"Regulatory histories for federal statutes and Executive Orders via Federal Register, 1936–present." },
+  { n:"ProView (Thomson Reuters)", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://next-proview.thomsonreuters.com/login?sponsor=003554784-1&forcecdn=false&bhskip=1", ac:[], d:"Searchable eBooks: practice guides, statutory codes, court rules, and treatises including California materials." },
+  // R
+  { n:"RCLL Research Guides", c:"Research Guides", url:"https://guides.law.stanford.edu/", ac:[], d:"Robert Crown Law Library research guides for specific topics and practice areas." },
+  { n:"Religion and the Law (HeinOnline)", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=religion", ac:[], d:"Materials on world religions and law, including Canon law and State RFRA compilations." },
+  // S
+  { n:"Session Laws Library (HeinOnline)", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=ssl", ac:[], d:"PDF scans of session laws for all 50 states, Canada, Australia, and U.S. Statutes at Large." },
+  { n:"Slavery in America & the World (HeinOnline)", c:"Legal History", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=slavery", ac:[], d:"Federal, state, and colonial statutes and cases on slavery, plus pro/anti-slavery periodicals." },
+  { n:"SSRN", c:"Journals & Periodicals", url:"https://stanford.idm.oclc.org/login?url=https://www.ssrn.com/en/", ac:[], d:"Multi-disciplinary repository of published and forthcoming scholarly articles — full PDF downloads." },
+  { n:"State Constitutions Illustrated (HeinOnline)", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=statecon", ac:[], d:"All 50 state constitutions — original, consolidated, and current — plus 10,000+ historical documents." },
+  { n:"State Statutes: A Historical Archive (HeinOnline)", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=sstatutes", ac:[], d:"Superseded statutory codes for all 50 U.S. states, 1717–2000." },
+  { n:"Supreme Court Brief", c:"Courts & Litigation", url:"https://ezproxy.law.stanford.edu/login?url=https://law.com/supremecourtbrief/", ac:["sls"], d:"Daily SCOTUS news: opinions, justices, new petitions, top appellate advocates, oral arguments." },
+  { n:"Supreme Court Insight", c:"Courts & Litigation", url:"https://ezproxy.law.stanford.edu/login?url=http://supremecourt.proquest.com/supremecourt", ac:[], d:"ProQuest database of SCOTUS cases, dockets, oral arguments, and amicus briefs, 1975–2017." },
+  // T
+  { n:"Taxation & Economic Reform in America (HeinOnline)", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=tera", ac:[], d:"Historical U.S. tax law from 1909: statutes, legislative histories, CBO/CRS reports." },
+  { n:"The Recorder", c:"California Law", url:"https://ezproxy.law.stanford.edu/login?url=https://www.law.com/therecorder", ac:["sls"], d:"Daily legal, business, and technology news in California." },
+  { n:"TRACfed", c:"Interdisciplinary", url:"https://ezproxy.law.stanford.edu/login?url=https://tracreports.org/tracfed/", ac:[], d:"Federal enforcement datasets: IRS, SSA, immigration actions, agency staffing and spending." },
+  { n:"TradeLawGuide", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://www.tradelawguide.com", ac:["sls"], d:"Annotated WTO agreements, DSB minutes, and secondary sources with subject indexing and citator." },
+  // U
+  { n:"U.S. Congressional Documents (HeinOnline)", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=congrec", ac:[], d:"Complete Congressional Record plus Annals of Congress, Register of Debates, hearings, and CRS reports." },
+  { n:"U.S. Federal Agency Documents (HeinOnline)", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=usfed", ac:[], d:"Reports and decisions from 70+ federal agencies and 65+ GPO titles, from 1751 to present." },
+  { n:"U.S. Federal Legislative History Library (HeinOnline)", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?collection=leghis", ac:[], d:"2,400+ compiled federal legislative histories from GPO, Arnold & Porter, and more." },
+  { n:"U.S. Presidential Library (HeinOnline)", c:"Federal Government", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?index=alpha/A_presidents&collection=presidents", ac:[], d:"Presidential papers Washington–G.W. Bush; CFR Title 3; impeachment documents." },
+  { n:"U.S. Supreme Court Library (HeinOnline)", c:"Courts & Litigation", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?index=supcourt&collection=supcourt", ac:[], d:"SCOTUS opinions and related materials via HeinOnline." },
+  { n:"U.S. Treaties and Agreements Library (HeinOnline)", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Index?index=ustreaties&collection=ustreaties", ac:[], d:"All U.S. treaties — in force, expired, or unpublished — plus the 'Blue set.'" },
+  // V
+  { n:"VitalLaw", c:"Treatises", url:"https://ezproxy.law.stanford.edu/login?url=https://my.vitallaw.com", ac:[], d:"Antitrust, IP, securities, Blue Chip: CCH, Intelligize, Goldstein on Copyright, Areeda & Hovenkamp." },
+  // W
+  { n:"Westlaw", c:"Primary Platforms", url:"https://lawschool.thomsonreuters.com/", ac:["pw"], d:"Case law, statutes, admin codes, KeyCite citator, and West Key Number System." },
+  { n:"World Constitutions Illustrated (HeinOnline)", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/COW?collection=cow", ac:[], d:"Every country's constitution in original language and English, with historical versions." },
+  { n:"WorldTradeLaw.net", c:"International & Foreign", url:"https://ezproxy.law.stanford.edu/login?url=https://www.worldtradelaw.net", ac:[], d:"WTO case analysis, dispute settlement tables, arbitration summaries — updated continually." },
+  // Guides
+  { n:"SLS News Research Guide", c:"Research Guides", url:"https://guides.law.stanford.edu/", ac:[], d:"RCLL guide to news research for legal topics." },
+  { n:"SUL EZproxy", c:"Research Guides", url:"https://library.stanford.edu/services/avoid-paywalls", ac:[], d:"Stanford University Libraries access tool for off-campus database access." },
+];
+
+/* access sets */
+const SLS_SET = new Set(DBS.filter(d=>d.ac.includes("sls")).map(d=>d.n));
+const PW_SET  = new Set(DBS.filter(d=>d.ac.includes("pw")).map(d=>d.n));
+const AI_SET  = new Set(DBS.filter(d=>d.ac.includes("ai")).map(d=>d.n));
+
+/* url lookup */
+const URL_MAP = {};
+DBS.forEach(d=>{ URL_MAP[d.n]=d.url; });
+function u(name){ return URL_MAP[name] || "https://law.stanford.edu/robert-crown-law-library/legal-databases/"; }
+
+/* ── GUIDED PATHS ── */
+const TOPIC = [
+  {id:"admin",label:"Administrative",sub:"Regulations, agencies, environment, immigration, tax & IP",children:[
+    {id:"admin-reg",label:"Regulatory Material, Generally",dbs:["Code of Federal Regulations (HeinOnline)","U.S. Federal Agency Documents (HeinOnline)","U.S. Presidential Library (HeinOnline)","ProQuest Regulatory Insight"]},
+    {id:"admin-env",label:"Environmental & Energy",dbs:["E&E News","Elgar Encyclopedia of Environmental Law","Environment & Energy Daily"]},
+    {id:"admin-imm",label:"Immigration",dbs:["Immigration Law & Policy in the U.S. (HeinOnline)","TRACfed","American Civil Liberties Union, 1912–1990"]},
+    {id:"admin-ip",label:"Patents & Trademarks",dbs:["Intellectual Property Law Collection (HeinOnline)","Kluwer Law Online","VitalLaw"]},
+    {id:"admin-tax",label:"Tax & Economics",dbs:["Taxation & Economic Reform in America (HeinOnline)","Elgar Encyclopedia of International Economic Law","Encyclopedia of Law and Economics","Bloomberg Law"]},
+  ]},
+  {id:"arb",label:"Arbitration",sub:"International commercial and investment arbitration",dbs:["Jus Mundi","Kluwer Arbitration","WorldTradeLaw.net","Making of Modern Law: Trials, 1600–1926"]},
+  {id:"const",label:"Constitutional",sub:"U.S. federal/state, foreign/comparative, civil rights",children:[
+    {id:"const-us",label:"US Federal & State",dbs:["Westlaw","LexisNexis","State Constitutions Illustrated (HeinOnline)"]},
+    {id:"const-foreign",label:"Foreign & Comparative",dbs:["Oxford Constitutions of the World","World Constitutions Illustrated (HeinOnline)","Kluwer Law Online","Max Planck Encyclopedia of Comparative Constitutional Law"]},
+    {id:"const-civil",label:"Civil Rights",dbs:["ProQuest History Vault","American Civil Liberties Union, 1912–1990","Civil Rights and Social Justice (HeinOnline)","Slavery in America & the World (HeinOnline)"]},
+  ]},
+  {id:"corp",label:"Corporate",sub:"Business transactions, securities, bankruptcy",children:[
+    {id:"corp-biz",label:"Business & Transactional",dbs:["Bloomberg Law","Intelligize","VitalLaw"]},
+    {id:"corp-bank",label:"Bankruptcy",dbs:["BankruptcyData","Florida-UCLA-LoPucki Bankruptcy Research Database"]},
+  ]},
+  {id:"courts",label:"Courts",sub:"Federal, Supreme Court, and state court research",children:[
+    {id:"courts-fed",label:"Federal Courts",dbs:["Almanac of the Federal Judiciary","Bloomberg Law","CourtLink"]},
+    {id:"courts-sup",label:"Supreme Court",dbs:["U.S. Supreme Court Library (HeinOnline)","Supreme Court Brief","Supreme Court Insight","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978"]},
+    {id:"courts-state",label:"State Courts",dbs:["Bloomberg Law","CEB OnLaw","CourtLink"]},
+  ]},
+  {id:"crim",label:"Criminal",sub:"Criminal law, criminology, prisoners' rights",dbs:["Crime, Punishment, and Popular Culture, 1790–1920","Criminal Justice & Criminology (HeinOnline)","Prison Legal News"]},
+  {id:"intl",label:"Foreign, Comparative & International",sub:"Foreign law, comparative, international, treaties",children:[
+    {id:"intl-foreign",label:"Foreign",dbs:["Foreign Law Guide","ICLR.4","Index to Foreign Legal Periodicals (HeinOnline)","LawnB"]},
+    {id:"intl-comp",label:"Comparative",dbs:["Max Planck Encyclopedia of Comparative Constitutional Law","Oxford Constitutions of the World","World Constitutions Illustrated (HeinOnline)"]},
+    {id:"intl-intl",label:"International",dbs:["Elgaronline Encyclopedias","Foreign & International Law Resources Database (HeinOnline)","Max Planck Encyclopedia of Public International Law","Oxford Reports on International Law"]},
+    {id:"intl-treaties",label:"Treaties",dbs:["U.S. Treaties and Agreements Library (HeinOnline)","Oxford Historical Treaties"]},
+  ]},
+  {id:"gov",label:"Government & Politics",sub:"Data, statistics, leadership, policy",dbs:["Gallup Analytics","Leadership Connect","PolicyMap","TRACfed"]},
+  {id:"hist",label:"Historical",sub:"Legislative history, U.S., British, and foreign legal history",children:[
+    {id:"hist-leg",label:"Legislative History",dbs:["ProQuest Legislative Insight","ProQuest Congressional","U.S. Federal Legislative History Library (HeinOnline)"]},
+    {id:"hist-pre",label:"Pre-Colonial",dbs:["Basilica Online","Legal Classics (HeinOnline)"]},
+    {id:"hist-us",label:"US Legal History (Colonial – 20th Century)",dbs:["HeinOnline","LLMC Digital","Gale Primary Sources","Making of Modern Law: Primary Sources","Making of Modern Law: Trials, 1600–1926","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978"]},
+    {id:"hist-uk",label:"British / Anglo-American Legal History",dbs:["Legal Classics (HeinOnline)","LLMC Digital","Eighteenth Century Collections Online","Making of Modern Law: US & UK Legal Treatises, 1800–1926"]},
+    {id:"hist-civil",label:"Civil Rights, Race & Slavery",dbs:["ProQuest History Vault","American Civil Liberties Union, 1912–1990","Civil Rights and Social Justice (HeinOnline)","Slavery in America & the World (HeinOnline)"]},
+    {id:"hist-crim",label:"Criminal Justice & Trial History",dbs:["Criminal Justice & Criminology (HeinOnline)","Crime, Punishment, and Popular Culture, 1790–1920","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978","Making of Modern Law: Trials, 1600–1926"]},
+    {id:"hist-for",label:"Foreign / Comparative Legal History",dbs:["Making of Modern Law: Foreign Primary Sources, 1600–1970","Basilica Online","Making of Modern Law: Foreign, Comparative & International Law, 1600–1926","LLMC Digital"]},
+    {id:"hist-scotus",label:"Supreme Court Legal History",dbs:["History of Supreme Court Nominations (HeinOnline)","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978","Supreme Court Insight","U.S. Supreme Court Library (HeinOnline)"]},
+  ]},
+  {id:"tribal",label:"Tribal, Native American & Indigenous",sub:"Treaties, claims, tribal codes, indigenous law",dbs:["Indigenous Peoples of the Americas: History, Culture & Law","Indian Claims Insight"]},
+];
+
+const SOURCE = [
+  {id:"primary",label:"Finding Cases, Statutes, Regulations, or Constitutions",sub:"Primary legal sources",children:[
+    {id:"primary-fed",label:"US Federal",dbs:["Westlaw","LexisNexis","Code of Federal Regulations (HeinOnline)","U.S. Federal Agency Documents (HeinOnline)"]},
+    {id:"primary-state",label:"US State",dbs:["National Survey of State Laws (HeinOnline)","Westlaw","LexisNexis","State Statutes: A Historical Archive (HeinOnline)"]},
+    {id:"primary-native",label:"Native American Law",dbs:["Indian Claims Insight","Indigenous Peoples of the Americas: History, Culture & Law"]},
+    {id:"primary-ca",label:"California",dbs:["ProView (Thomson Reuters)","CEB OnLaw","Westlaw","LexisNexis"]},
+    {id:"primary-const",label:"Constitutions",dbs:["Oxford Constitutions of the World","World Constitutions Illustrated (HeinOnline)","State Constitutions Illustrated (HeinOnline)"]},
+    {id:"primary-uk",label:"England / Wales / UK",dbs:["Westlaw","LexisNexis","ICLR.4","HeinOnline"]},
+    {id:"primary-foreign",label:"Other Foreign Law",dbs:["LawnB","Lexology Academic","ICLR.4"]},
+  ]},
+  {id:"secondary",label:"Background Reading & Secondary Sources",sub:"Encyclopedias, treatises, law reviews, practice materials",children:[
+    {id:"sec-enc",label:"Encyclopedias or Subject Overview",dbs:["Elgar Concise Encyclopedias","Elgaronline Encyclopedias","Westlaw","LexisNexis"]},
+    {id:"sec-treatise",label:"Book or Treatise on a Specific Area of Law",dbs:["ProView (Thomson Reuters)","Oxford Handbooks Online","Westlaw","LexisNexis","Bloomberg Law"]},
+    {id:"sec-journal",label:"Law Review / Journal Article",dbs:["Law Journal Library (HeinOnline)","SSRN","Index to Legal Periodicals & Books Full Text","JSTOR"]},
+    {id:"sec-practice",label:"Practice Materials (deskbooks, forms, checklists)",dbs:["Bloomberg Law","CEB OnLaw","Hotshot","ProView (Thomson Reuters)"]},
+    {id:"sec-guides",label:"Research Guides",dbs:["RCLL Research Guides"]},
+  ]},
+  {id:"leghistory",label:"Legislative or Regulatory History",sub:"Bills, Congressional records, Federal Register",children:[
+    {id:"leg-leg",label:"Legislative",dbs:["ProQuest Congressional","ProQuest Legislative Insight","U.S. Federal Legislative History Library (HeinOnline)"]},
+    {id:"leg-reg",label:"Regulatory",dbs:["Code of Federal Regulations (HeinOnline)","ProQuest Regulatory Insight","U.S. Federal Agency Documents (HeinOnline)"]},
+  ]},
+  {id:"dockets",label:"Docket Research & Court Filings",sub:"Federal and state court filings",children:[
+    {id:"dock-fed",label:"Federal",dbs:["Bloomberg Law","CourtLink","Supreme Court Insight","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978","Making of Modern Law: Trials, 1600–1926"]},
+    {id:"dock-state",label:"State",dbs:["Bloomberg Law","CourtLink"]},
+  ]},
+  {id:"transact",label:"Transactional Resources",sub:"Deal documents, securities, M&A",dbs:["Bloomberg Law","Intelligize","VitalLaw"]},
+  {id:"intl2",label:"International, Foreign & Comparative",sub:"Foreign law, arbitration, trade, treaties",children:[
+    {id:"intl2-country",label:"Foreign Law of a Specific Country",dbs:["ICLR.4","LawnB","Foreign Law Guide"]},
+    {id:"intl2-arb",label:"International Arbitration",dbs:["Jus Mundi","Kluwer Arbitration","Lexology Academic","WorldTradeLaw.net"]},
+    {id:"intl2-trade",label:"International Trade",dbs:["WorldTradeLaw.net","Investor-State LawGuide","TradeLawGuide","VitalLaw"]},
+    {id:"intl2-pil",label:"Public International Law",dbs:["Oxford Reports on International Law","Kluwer Law Online","Max Planck Encyclopedia of Public International Law"]},
+    {id:"intl2-comp",label:"Comparative Constitutional",dbs:["Oxford Constitutions of the World","World Constitutions Illustrated (HeinOnline)","Max Planck Encyclopedia of Comparative Constitutional Law"]},
+    {id:"intl2-treaties",label:"Treaties",dbs:["U.S. Treaties and Agreements Library (HeinOnline)","Oxford Historical Treaties"]},
+  ]},
+  {id:"news",label:"Legal News & Current Awareness",sub:"California, legal industry, subject-specific news",children:[
+    {id:"news-gen",label:"General & Historical Newspapers",dbs:["SLS News Research Guide","SUL EZproxy"]},
+    {id:"news-ca",label:"California News",dbs:["The Recorder"]},
+    {id:"news-legal",label:"Legal News",dbs:["Bloomberg Law","Law.com","Law360"]},
+    {id:"news-firm",label:"Law Firm & Legal Industry Intelligence",dbs:["Law.com","Law360","Intelligize"]},
+    {id:"news-subject",label:"Subject-Specific News (environmental, prison, etc.)",dbs:["E&E News","Environment & Energy Daily","Prison Legal News","WorldTradeLaw.net"]},
+    {id:"news-scotus",label:"Supreme Court Coverage",dbs:["Supreme Court Brief"]},
+  ]},
+  {id:"factual",label:"Factual Research",sub:"Data, statistics, people, and organizations",children:[
+    {id:"fact-data",label:"Data, Statistics, or Empirical Research",dbs:["Gallup Analytics","PolicyMap","TRACfed","BankruptcyData"]},
+    {id:"fact-people",label:"People & Organizations",dbs:["Almanac of the Federal Judiciary","LexisNexis","Leadership Connect"]},
+  ]},
+  {id:"archival",label:"Historical or Archival Materials",sub:"Pre-colonial, U.S., British, and foreign legal history",children:[
+    {id:"arch-pre",label:"Pre-Colonial",dbs:["Basilica Online","Legal Classics (HeinOnline)"]},
+    {id:"arch-us",label:"US Legal History (Colonial – 20th Century)",dbs:["HeinOnline","LLMC Digital","Gale Primary Sources","Making of Modern Law: Primary Sources","Making of Modern Law: Trials, 1600–1926","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978"]},
+    {id:"arch-uk",label:"British / Anglo-American Legal History",dbs:["Legal Classics (HeinOnline)","LLMC Digital","Eighteenth Century Collections Online","Making of Modern Law: US & UK Legal Treatises, 1800–1926"]},
+    {id:"arch-civil",label:"Civil Rights, Race & Slavery",dbs:["ProQuest History Vault","American Civil Liberties Union, 1912–1990","Civil Rights and Social Justice (HeinOnline)","Slavery in America & the World (HeinOnline)"]},
+    {id:"arch-crim",label:"Criminal Justice & Trial History",dbs:["Criminal Justice & Criminology (HeinOnline)","Crime, Punishment, and Popular Culture, 1790–1920","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978","Making of Modern Law: Trials, 1600–1926"]},
+    {id:"arch-for",label:"Foreign / Comparative Legal History",dbs:["Making of Modern Law: Foreign Primary Sources, 1600–1970","Basilica Online","Making of Modern Law: Foreign, Comparative & International Law, 1600–1926","LLMC Digital"]},
+    {id:"arch-scotus",label:"Supreme Court Legal History",dbs:["History of Supreme Court Nominations (HeinOnline)","Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978","Supreme Court Insight","U.S. Supreme Court Library (HeinOnline)"]},
+  ]},
+  {id:"ai-path",label:"AI Tools",sub:"AI-assisted research, drafting, and advocacy practice",dbs:["CICERO (Rhetoric)","Harvey","Legora","LexText AI","Westlaw","LexisNexis"]},
+];
+
+/* ── state ── */
+let activeMode = "guided";
+let activeTree = "topic";
+let stack = [];
+let activeCat = "All";
+
+/* ── mode switching ── */
+function setMode(m) {
+  activeMode = m;
+  ["guided","browse","ai"].forEach(x => {
+    document.getElementById("pane-"+x).style.display = m===x ? "block" : "none";
+    document.getElementById("card-"+x).classList.toggle("active", m===x);
+  });
+  if (m === "browse" && !document.getElementById("pills").children.length) initBrowse();
+}
+
+/* ── guided ── */
+function setTree(t) {
+  activeTree = t; stack = [];
+  document.getElementById("btn-topic").classList.toggle("on", t==="topic");
+  document.getElementById("btn-source").classList.toggle("on", t==="source");
+  renderGuide();
+}
+function currentTree() { return activeTree === "topic" ? TOPIC : SOURCE; }
+function findNode(id, nodes) {
+  for (const n of nodes) {
+    if (n.id === id) return n;
+    if (n.children) { const f = findNode(id, n.children); if (f) return f; }
+  }
+  return null;
+}
+function navigate(id, label) { stack.push({id, label}); renderGuide(); }
+function goBack(depth) { stack = stack.slice(0, depth); renderGuide(); }
+
+function dbCard(name) {
+  const dbObj = DBS.find(d => d.n === name);
+  const link = dbObj ? dbObj.url : u(name);
+  const desc = dbObj ? dbObj.d : "";
+  const isSLS = SLS_SET.has(name);
+  const isPW  = PW_SET.has(name);
+  const isAI  = AI_SET.has(name);
+  return `<a class="db-card" href="${link}" target="_blank" rel="noopener noreferrer">
+    <div class="db-name">${name}</div>
+    ${desc ? `<div class="db-desc">${desc}</div>` : ""}
+    <div class="db-badges">
+      ${isSLS ? '<span class="badge b-sls">SLS only</span>' : ""}
+      ${isPW  ? '<span class="badge b-pw">personal login</span>' : ""}
+      ${isAI  ? '<span class="badge b-ai">AI tool</span>' : ""}
+    </div>
+  </a>`;
+}
+
+function renderGuide() {
+  // crumb
+  const crumbEl = document.getElementById("crumb");
+  const parts = [{label:"Start", depth:0}, ...stack.map((s,i) => ({label:s.label, depth:i+1}))];
+  crumbEl.innerHTML = parts.map((p,i) => {
+    const isLast = i === parts.length - 1;
+    return `<span class="crumb-item${isLast?" active":""}" ${isLast?"":`onclick="goBack(${p.depth})"`}>${p.label}</span>${isLast ? "" : '<span class="crumb-sep"> › </span>'}`;
+  }).join("");
+
+  const el = document.getElementById("guide-out");
+  if (stack.length === 0) {
+    el.innerHTML = `<div class="choice-grid">${currentTree().map(n => `
+      <div class="choice" onclick="navigate('${n.id}', ${JSON.stringify(n.label)})">
+        <div class="choice-label">${n.label}</div>
+        ${n.sub ? `<div class="choice-sub">${n.sub}</div>` : ""}
+        <div class="choice-arrow">${n.children ? "Choose a subtype →" : "See databases →"}</div>
+      </div>`).join("")}</div>`;
+    return;
+  }
+
+  const node = findNode(stack[stack.length-1].id, currentTree());
+  if (!node) { el.innerHTML = ""; return; }
+
+  let html = `<button class="back-btn" onclick="goBack(${stack.length-1})">← Back</button>`;
+
+  if (node.children) {
+    html += `<div class="choice-grid">${node.children.map(c => `
+      <div class="choice" onclick="navigate('${c.id}', ${JSON.stringify(c.label)})">
+        <div class="choice-label">${c.label}</div>
+        <div class="choice-arrow">See databases →</div>
+      </div>`).join("")}</div>`;
+  }
+
+  if (node.dbs && node.dbs.length) {
+    const top = node.children ? `style="margin-top:16px"` : "";
+    html += `<div class="results-label" ${top}>${node.dbs.length} recommended database${node.dbs.length>1?"s":""}</div>`;
+    html += `<div class="db-grid">${node.dbs.map(dbCard).join("")}</div>`;
+  }
+
+  html += `<div class="escape">Not finding what you need? 
+    <a onclick="setMode('browse')" href="#">Browse all databases</a> · 
+    <a href="https://law.stanford.edu/robert-crown-law-library/legal-databases/" target="_blank">View A–Z list</a> · 
+    Email <a href="mailto:reference@law.stanford.edu">reference@law.stanford.edu</a>
+  </div>`;
+  el.innerHTML = html;
+}
+
+/* ── browse ── */
+const CATS = ["All", ...[...new Set(DBS.map(d=>d.c))].sort()];
+function initBrowse() {
+  document.getElementById("pills").innerHTML = CATS.map(c =>
+    `<button class="pill${c===activeCat?" on":""}" onclick="setCat('${c.replace(/'/g,"\\'")}')"> ${c}</button>`
+  ).join("");
+  renderBrowse();
+}
+function setCat(c) {
+  activeCat = c;
+  document.querySelectorAll(".pill").forEach(b => b.classList.toggle("on", b.textContent.trim()===c));
+  renderBrowse();
+}
+function renderBrowse() {
+  const q = (document.getElementById("q")||{value:""}).value.toLowerCase();
+  let filtered = DBS.filter(d => {
+    const matchCat = activeCat==="All" || d.c===activeCat;
+    const matchQ = !q || d.n.toLowerCase().includes(q) || d.d.toLowerCase().includes(q) || d.c.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  document.getElementById("browse-meta").textContent = `${filtered.length} database${filtered.length!==1?"s":""}`;
+  if (!filtered.length) { document.getElementById("browse-out").innerHTML='<div class="empty">No databases match your search.</div>'; return; }
+  const grouped = {};
+  filtered.forEach(d => { if (!grouped[d.c]) grouped[d.c]=[]; grouped[d.c].push(d); });
+  document.getElementById("browse-out").innerHTML = Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b)).map(([cat,dbs]) => `
+    <div class="section">
+      <div class="sec-label">${cat}</div>
+      <div class="db-grid">${dbs.map(d => {
+        const isSLS = SLS_SET.has(d.n); const isPW = PW_SET.has(d.n); const isAI = AI_SET.has(d.n);
+        return `<a class="db-card" href="${d.url}" target="_blank" rel="noopener noreferrer">
+          <div class="db-name">${d.n}</div>
+          <div class="db-desc">${d.d}</div>
+          <div class="db-badges">
+            ${isSLS?'<span class="badge b-sls">SLS only</span>':""}
+            ${isPW?'<span class="badge b-pw">personal login</span>':""}
+            ${isAI?'<span class="badge b-ai">AI tool</span>':""}
+          </div>
+        </a>`;
+      }).join("")}</div>
+    </div>`).join("");
+}
+
+/* init */
+renderGuide();
+</script>
+</body>
+</html>
