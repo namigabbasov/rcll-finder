@@ -62,10 +62,14 @@
 
   /* ── Page title ── */
   .page-title { margin-bottom: 24px; }
-  .page-title h1 { font-size: 27px; font-weight: 700; color: var(--text); line-height: 1.2; letter-spacing: -0.025em; }
-  .page-title p { font-size: 13.5px; color: var(--text3); margin-top: 6px; }
+  .page-title h1 { font-size: 27px; font-weight: 700; color: var(--text); line-height: 1.2; letter-spacing: -0.025em; transition: font-size 0.38s, text-align 0s; }
+  .page-title p { font-size: 13.5px; color: var(--text3); margin-top: 6px; transition: font-size 0.38s; }
   .page-title p a { color: var(--stanford); text-decoration: none; }
   .page-title p a:hover { text-decoration: underline; }
+
+  body.home .page-title { text-align: center; }
+  body.home .page-title h1 { font-size: 38px; letter-spacing: -0.03em; }
+  body.home .page-title p { font-size: 15px; margin-top: 10px; }
 
   /* ── Entry mode cards ── */
   .entry-grid {
@@ -270,10 +274,10 @@
   .step-label { font-size: 11.5px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; margin-left: 5px; }
 
   /* ── Home landing ── */
-  .home-pane { padding: 4px 0 0; }
+  .home-pane { padding: 4px 0 0; text-align: center; }
   .home-desc {
     font-size: 15px; color: var(--text2); line-height: 1.7;
-    max-width: 680px; margin-bottom: 10px;
+    max-width: 680px; margin: 0 auto 10px;
   }
   .home-desc strong { color: var(--text); font-weight: 600; }
   .home-start { font-size: 14.5px; color: var(--text3); line-height: 1.6; }
