@@ -52,13 +52,14 @@
     gap: 12px;
     box-shadow: 0 1px 0 rgba(0,0,0,0.18);
   }
-  .site-header .logo { font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
+  .site-header .logo { font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; cursor: pointer; }
+  .site-header .logo:hover { opacity: 0.82; }
   .site-header .logo span { opacity: 0.62; font-weight: 400; }
   .site-header a { color: rgba(255,255,255,0.72); font-size: 12.5px; text-decoration: none; margin-left: auto; letter-spacing: 0.01em; }
   .site-header a:hover { color: #fff; }
 
   /* ── Layout ── */
-  .container { max-width: 1100px; margin: 0 auto; padding: 32px 28px 64px; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 32px 36px 64px; }
 
   /* ── Page title ── */
   .page-title { margin-bottom: 24px; }
@@ -67,20 +68,20 @@
   .page-title p a { color: var(--stanford); text-decoration: none; }
   .page-title p a:hover { text-decoration: underline; }
 
-  body.home .page-title { text-align: center; }
-  body.home .page-title h1 { font-size: 38px; letter-spacing: -0.03em; }
-  body.home .page-title p { font-size: 15px; margin-top: 10px; }
+  body.home .page-title { text-align: center; margin-bottom: 32px; }
+  body.home .page-title h1 { font-size: 46px; letter-spacing: -0.035em; }
+  body.home .page-title p { font-size: 15.5px; margin-top: 12px; }
 
   /* ── Entry mode cards ── */
   .entry-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     margin-bottom: 0;
   }
   .entry-card {
     background: var(--bg);
-    border: 1.5px solid var(--border);
+    border: 1.5px solid var(--stanford);
     border-radius: var(--radius);
     padding: 18px 20px 20px;
     cursor: pointer;
@@ -88,7 +89,7 @@
     text-align: left;
     position: relative;
   }
-  .entry-card:hover:not(.active) { border-color: var(--border2); box-shadow: var(--shadow-sm); }
+  .entry-card:hover:not(.active) { background: var(--stanford-light); box-shadow: var(--shadow-sm); }
   .entry-card.active {
     background: var(--stanford);
     border-color: var(--stanford);
@@ -100,10 +101,15 @@
 
   /* ── Bigger cards on home landing ── */
   body.home .entry-grid { gap: 14px; }
-  body.home .entry-card { padding: 28px 26px 32px; }
-  body.home .entry-card h2 { font-size: 18px; margin-bottom: 10px; }
-  body.home .entry-card p { font-size: 14px; }
-  body.home .entry-card .coming-soon { font-size: 12px; margin-top: 12px; }
+  body.home .entry-card { padding: 32px 28px 36px; border: 2px solid var(--stanford); min-height: 160px; }
+  body.home .entry-card h2 { font-size: 20px; margin-bottom: 12px; color: var(--stanford); }
+  body.home .entry-card p { font-size: 14.5px; line-height: 1.65; }
+  body.home .entry-card .coming-soon { font-size: 12px; margin-top: 14px; }
+  body.home #card-guided { background: rgba(140,21,21,0.04); }
+  .ecard-icon { width: 38px; height: 38px; border-radius: 10px; background: rgba(140,21,21,0.08); color: var(--stanford); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; flex-shrink: 0; }
+  body:not(.home) .ecard-icon { display: none; }
+  .entry-card:hover:not(.active) .ecard-icon { background: rgba(140,21,21,0.13); }
+  .entry-card.active .ecard-icon { background: rgba(255,255,255,0.18); color: #fff; }
   .entry-card.active h2 { color: #fff; }
   .entry-card.active p { color: rgba(255,255,255,0.78); }
   .entry-card .coming-soon {
@@ -111,6 +117,16 @@
     background: var(--amber-bg); color: var(--amber-text); border-radius: 99px; font-weight: 500;
   }
   .entry-card.active .coming-soon { background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.88); }
+  .entry-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(140,21,21,0.07); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; color: var(--stanford); flex-shrink: 0; }
+  .entry-card:hover:not(.active) .entry-icon { background: rgba(140,21,21,0.12); }
+  .entry-card.active .entry-icon { background: rgba(255,255,255,0.18); color: #fff; }
+  .entry-badge { display: inline-block; font-size: 10px; font-weight: 700; color: var(--stanford); background: rgba(140,21,21,0.08); border: 1px solid rgba(140,21,21,0.22); border-radius: 99px; padding: 2px 9px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.07em; }
+  .entry-card.active .entry-badge { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); }
+  body:not(.home) .entry-icon,
+  body:not(.home) .entry-badge { display: none; }
+  .home-cats { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 22px; }
+  .home-cat { font-size: 12.5px; color: var(--text2); padding: 6px 15px; border: 1px solid var(--border2); border-radius: 99px; cursor: pointer; background: var(--bg); transition: all 0.13s; font-weight: 500; font-family: inherit; }
+  .home-cat:hover { background: var(--stanford); color: #fff; border-color: var(--stanford); }
 
   /* ── Divider ── */
   .divider { height: 1px; background: var(--border); margin: 4px 0 24px; }
@@ -135,17 +151,17 @@
   /* ── Choice grid ── */
   .choice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px; margin-bottom: 20px; }
   .choice {
-    background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--bg); border: 1px solid var(--border); border-top: 2px solid var(--stanford); border-radius: var(--radius);
     padding: 14px 16px; cursor: pointer; text-align: left; transition: all 0.13s;
     display: flex; flex-direction: column;
   }
-  .choice:hover { border-color: rgba(140,21,21,0.4); background: var(--stanford-light); box-shadow: var(--shadow-sm); }
+  .choice:hover { border-color: rgba(140,21,21,0.5); border-top-color: var(--stanford); background: var(--stanford-light); box-shadow: var(--shadow-sm); }
   .choice.compact { padding: 10px 12px; min-height: 90px; }
   .choice.compact .choice-label { font-size: 12.5px; }
   .choice-label { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.3; }
   .choice-sub { font-size: 12px; color: var(--text2); margin-top: 4px; line-height: 1.4; flex: 1; }
   .choice-arrow { display: inline-flex; align-items: center; align-self: flex-start; margin-top: auto; padding: 4px 10px; font-size: 11.5px; color: #fff; font-weight: 500; background: var(--stanford); border: 1px solid var(--stanford); border-radius: 99px; line-height: 1; }
-  .choice-arrow.is-drill { display: inline-flex; align-items: center; align-self: flex-start; margin-top: auto; font-size: 11.5px; color: var(--text2); font-weight: 500; background: var(--bg3); border: 1px solid var(--border); border-radius: 99px; padding: 4px 10px; line-height: 1; }
+  .choice-arrow.is-drill { display: inline-flex; align-items: center; align-self: flex-start; margin-top: auto; font-size: 11.5px; color: var(--stanford); font-weight: 500; background: var(--stanford-light); border: 1px solid rgba(140,21,21,0.28); border-radius: 99px; padding: 4px 10px; line-height: 1; }
 
   /* ── Back button ── */
   .back-btn {
@@ -194,6 +210,10 @@
   .access-chip { font-size: 12px; padding: 5px 12px; border-radius: 99px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-weight: 500; transition: all 0.12s; }
   .access-chip:hover { background: var(--bg2); color: var(--text); }
   .access-chip.on { background: var(--stanford); border-color: var(--stanford); color: #fff; }
+  .cat-chip { font-size: 12px; padding: 5px 12px; border-radius: 99px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-weight: 500; transition: all 0.12s; font-family: inherit; }
+  .cat-chip:hover { background: var(--bg2); color: var(--text); }
+  .cat-chip.on { background: var(--stanford); border-color: var(--stanford); color: #fff; }
+  .cat-pills-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
   .browse-meta { font-size: 13px; color: var(--text3); margin-bottom: 14px; }
   .section { margin-bottom: 22px; }
   .sec-label {
@@ -258,19 +278,23 @@
   .step-label { font-size: 11.5px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; margin-left: 5px; }
 
   /* ── Home landing ── */
-  .home-pane { padding: 4px 0 0; text-align: center; }
+  .home-pane { padding: 28px 0 0; text-align: center; }
   .home-desc {
-    font-size: 15px; color: var(--text2); line-height: 1.7;
-    max-width: 680px; margin: 0 auto 10px;
+    font-size: 16px; color: var(--text2); line-height: 1.75;
+    max-width: 680px; margin: 0 auto 0;
   }
   .home-desc strong { color: var(--text); font-weight: 600; }
+  .home-suggestions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin-top: 22px; }
+  .home-sugg-label { font-size: 12.5px; color: var(--text3); font-weight: 500; margin-right: 2px; }
+  .home-sugg { font-size: 13px; padding: 7px 16px; border-radius: 99px; border: 1px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; font-family: inherit; font-weight: 500; transition: all 0.13s; text-decoration: none; display: inline-block; }
+  .home-sugg:hover { background: var(--stanford); color: #fff; border-color: var(--stanford); }
   .home-start { font-size: 14.5px; color: var(--text3); line-height: 1.6; }
   .home-start a { color: var(--stanford); cursor: pointer; font-weight: 500; text-decoration: none; }
   .home-start a:hover { text-decoration: underline; }
 
   /* ── Home spacer (collapses when mode selected) ── */
   .home-spacer {
-    height: 9vh;
+    height: 13vh;
     transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .home-spacer.collapsed { height: 0; }
@@ -291,12 +315,12 @@
     .tab-btn { font-size: 12px; padding: 8px 12px; }
     .sticky-divider { margin: 8px 0 16px; }
     .home-spacer { height: 3vh; }
-    body.home .page-title h1 { font-size: 26px; }
-    body.home .page-title p { font-size: 13px; }
-    body.home .entry-card { padding: 18px 16px 20px; }
-    body.home .entry-card h2 { font-size: 16px; }
+    body.home .page-title h1 { font-size: 30px; }
+    body.home .page-title p { font-size: 13.5px; }
+    body.home .entry-card { padding: 20px 16px 24px; min-height: unset; }
+    body.home .entry-card h2 { font-size: 17px; }
     body.home .entry-card p { font-size: 13.5px; }
-    body.home .home-desc { font-size: 13.5px; }
+    body.home .home-desc { font-size: 14px; }
     body.home .home-start { font-size: 13px; }
   }
   @media (max-width: 440px) {
@@ -309,7 +333,7 @@
 <body class="home">
 
 <header class="site-header">
-  <div class="logo">Stanford Law School <span>/ Robert Crown Law Library</span></div>
+  <div class="logo" onclick="goHome()">Stanford Law School <span>/ Robert Crown Law Library</span></div>
   <a href="https://law.stanford.edu/robert-crown-law-library/legal-databases/" target="_blank">Full A–Z list ↗</a>
 </header>
 
@@ -329,14 +353,23 @@
     </div>
     <div class="entry-grid">
       <div class="entry-card" id="card-browse" onclick="setMode('browse')">
+        <div class="ecard-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="7.5" cy="7.5" r="4.8" stroke="currentColor" stroke-width="1.8"/><path d="M11.3 11.3L16 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
         <h2>Browse all databases</h2>
-        <p>Search and filter the full list of 100+ databases by name, category, or access type.</p>
+        <p>Search and filter all 114+ databases by name, category, or access type.</p>
       </div>
       <div class="entry-card" id="card-guided" onclick="setMode('guided')">
+        <div class="ecard-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2.5V9m0 0L5 14m4-5l4 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5" cy="14.5" r="1.5" fill="currentColor"/><circle cx="13" cy="14.5" r="1.5" fill="currentColor"/><circle cx="9" cy="2.5" r="1.5" fill="currentColor"/></svg>
+        </div>
         <h2>Guided paths</h2>
-        <p>Answer a few questions about your research and get targeted database recommendations.</p>
+        <p>Answer two questions about your research and get targeted database recommendations.</p>
       </div>
       <div class="entry-card" id="card-ai" onclick="setMode('ai')">
+        <div class="ecard-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><path d="M9 1.5c0 4.1-3.4 7.5-7.5 7.5 4.1 0 7.5 3.4 7.5 7.5 0-4.1 3.4-7.5 7.5-7.5-4.1 0-7.5-3.4-7.5-7.5z"/></svg>
+        </div>
         <h2>AI search</h2>
         <p>Describe your research question in plain language and get smart database recommendations.</p>
         <span class="coming-soon">Coming soon</span>
@@ -348,8 +381,23 @@
 
   <!-- HOME PANE -->
   <div id="pane-home" class="home-pane">
-    <p class="home-desc">The Robert Crown Law Library provides access to <strong>114+ research databases</strong> covering primary sources, secondary literature, international law, empirical data, news, and more.</p>
-    <p class="home-start">New here? <a onclick="setMode('guided')">Guided paths</a> asks two questions and recommends the right databases for your research question.</p>
+    <p class="home-desc">The Robert Crown Law Library provides access to <strong>114+ research databases</strong>: primary sources, secondary literature, international law, empirical data, AI tools, and more.</p>
+    <div id="home-recent" class="home-suggestions" style="display:none"></div>
+    <div class="home-suggestions">
+      <span class="home-sugg-label">Quick access:</span>
+      <a class="home-sugg" href="https://lawschool.thomsonreuters.com/" target="_blank" rel="noopener noreferrer" onclick="trackVisit('Westlaw')">Westlaw ↗</a>
+      <a class="home-sugg" href="https://www.lexisnexis.com/lawschool/lsp/p/facultyhome.aspx?lc=LawSchoolPortal/Signin" target="_blank" rel="noopener noreferrer" onclick="trackVisit('LexisNexis')">LexisNexis ↗</a>
+      <a class="home-sugg" href="https://www.bloomberglaw.com/" target="_blank" rel="noopener noreferrer" onclick="trackVisit('Bloomberg Law')">Bloomberg Law ↗</a>
+      <a class="home-sugg" href="https://ezproxy.law.stanford.edu/login?url=https://access.heinonline.com/HOL/Welcome" target="_blank" rel="noopener noreferrer" onclick="trackVisit('HeinOnline')">HeinOnline ↗</a>
+    </div>
+    <div class="home-suggestions">
+      <span class="home-sugg-label">Try:</span>
+      <button class="home-sugg" onclick="gotoNode('topic', ['corp', 'corp-biz'])">Corporate &amp; securities</button>
+      <button class="home-sugg" onclick="gotoNode('topic', ['courts', 'courts-sup'])">Supreme Court records</button>
+      <button class="home-sugg" onclick="gotoNode('source', ['secondary', 'sec-journal'])">Law review articles</button>
+      <button class="home-sugg" onclick="gotoNode('topic', ['admin', 'admin-imm'])">Immigration law</button>
+      <button class="home-sugg" onclick="gotoNode('source', ['intl2', 'intl2-arb'])">International arbitration</button>
+    </div>
   </div>
 
   <!-- GUIDED PANE -->
@@ -367,6 +415,7 @@
     <div class="browse-bar">
       <input type="search" id="q" placeholder="Search databases by name or description…" oninput="renderBrowse()">
     </div>
+    <div id="cat-pills" class="cat-pills-row"></div>
     <div class="access-filters">
       <button class="access-chip" data-filter="sls" onclick="toggleFilter('sls')">SLS only</button>
       <button class="access-chip" data-filter="pw" onclick="toggleFilter('pw')">Requires login</button>
@@ -671,9 +720,67 @@ function setMode(m) {
   if (m === "browse") initBrowse();
 }
 
+function trackVisit(name) {
+  const stored = JSON.parse(localStorage.getItem('rcll-recent') || '[]');
+  const updated = [name, ...stored.filter(n => n !== name)].slice(0, 5);
+  localStorage.setItem('rcll-recent', JSON.stringify(updated));
+}
+
+function renderRecent() {
+  const el = document.getElementById('home-recent');
+  if (!el) return;
+  const recent = JSON.parse(localStorage.getItem('rcll-recent') || '[]');
+  if (!recent.length) { el.style.display = 'none'; return; }
+  const items = recent.map(name => {
+    const db = DBS.find(d => d.n === name);
+    if (!db) return '';
+    return `<a class="home-sugg" href="${db.url}" target="_blank" rel="noopener noreferrer" onclick="trackVisit('${name}')">${name} ↗</a>`;
+  }).filter(Boolean).join('');
+  if (!items) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  el.innerHTML = `<span class="home-sugg-label">Recent:</span>${items}`;
+}
+
+function goHome() {
+  activeMode = "";
+  location.hash = "";
+  document.body.classList.add("home");
+  document.getElementById("pane-home").style.display = "";
+  document.getElementById("home-spacer").classList.remove("collapsed");
+  ["guided","browse","ai"].forEach(x => {
+    document.getElementById("pane-"+x).style.display = "none";
+    document.getElementById("card-"+x).classList.remove("active");
+  });
+  document.getElementById("global-q").value = "";
+  renderRecent();
+}
+
+function gotoNode(treeType, nodeIds) {
+  activeTree = treeType;
+  stack = [];
+  setMode('guided');
+  document.getElementById('btn-topic').classList.toggle('on', treeType === 'topic');
+  document.getElementById('btn-source').classList.toggle('on', treeType === 'source');
+  for (const id of nodeIds) {
+    const node = findNode(id, currentTree());
+    if (node) stack.push({id, label: node.label});
+  }
+  renderGuide();
+}
+
+function gotoTopicCategory(id) {
+  stack = [];
+  activeTree = 'topic';
+  setMode('guided');
+  document.getElementById('btn-topic').classList.add('on');
+  document.getElementById('btn-source').classList.remove('on');
+  navigate(id);
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   const hash = location.hash.replace("#", "");
   if (["guided","browse","ai"].includes(hash)) setMode(hash);
+  renderRecent();
 });
 
 /* ── guided ── */
@@ -701,7 +808,7 @@ function dbCard(name) {
   const isSLS = SLS_SET.has(name);
   const isPW  = PW_SET.has(name);
   const isAI  = AI_SET.has(name);
-  return `<a class="db-card${isPW ? " req-login" : ""}" href="${link}" target="_blank" rel="noopener noreferrer">
+  return `<a class="db-card${isPW ? " req-login" : ""}" href="${link}" target="_blank" rel="noopener noreferrer" onclick="trackVisit('${name.replace(/'/g,"\\'")}')">
     <div class="db-name">${name}</div>
     ${desc ? `<div class="db-desc">${desc}</div>` : ""}
     <div class="db-badges">
@@ -801,7 +908,6 @@ const GUIDE_CATS = [
   {key:"Legal News & Current Awareness",                            label:"Legal News"},
   {key:"Factual Research",                                          label:"Factual Research"},
   {key:"Historical or Archival Materials",                          label:"Archival"},
-  {key:"AI",                                                        label:"AI"},
 ];
 
 /* Build db → guided-path-categories map from the trees */
@@ -826,10 +932,20 @@ function toggleFilter(f) {
   document.querySelectorAll(".access-chip").forEach(b => b.classList.toggle("on", activeFilters.has(b.dataset.filter)));
   renderBrowse();
 }
+function setCat(key) {
+  activeCat = key;
+  document.querySelectorAll(".cat-chip").forEach(b => b.classList.toggle("on", b.dataset.catkey === key));
+  renderBrowse();
+}
 function initBrowse() {
   activeCat = "All";
   activeFilters = new Set();
   document.querySelectorAll(".access-chip").forEach(b => b.classList.remove("on"));
+  const pillsEl = document.getElementById("cat-pills");
+  pillsEl.innerHTML = GUIDE_CATS.map(gc => {
+    if (typeof gc === 'string') return '';
+    return `<button class="cat-chip${gc.key === 'All' ? ' on' : ''}" data-catkey="${gc.key}" onclick="setCat('${gc.key}')">${gc.label}</button>`;
+  }).join("");
   renderBrowse();
 }
 function renderBrowse() {
@@ -848,7 +964,7 @@ function renderBrowse() {
 
   function cardHtml(d) {
     const isSLS = SLS_SET.has(d.n); const isPW = PW_SET.has(d.n); const isAI = AI_SET.has(d.n);
-    return `<a class="db-card${isPW ? " req-login" : ""}" href="${d.url}" target="_blank" rel="noopener noreferrer">
+    return `<a class="db-card${isPW ? " req-login" : ""}" href="${d.url}" target="_blank" rel="noopener noreferrer" onclick="trackVisit('${d.n.replace(/'/g,"\\'")}')">
       <div class="db-name">${d.n}</div>
       <div class="db-desc">${d.d}</div>
       <div class="db-badges">
